@@ -25,10 +25,9 @@ using namespace std;
 class Car
 {
 public:
-	Car(vec3 position, vec3 velocity, vec3 rotationalVelocity, vec3 scale, int shaderProgram) : carPos(position), carVel(velocity), rotationVel(rotationalVelocity), carScale(scale)
+	Car(vec3 position, vec3 velocity, vec3 rotationalVector, vec3 rotationalVelocity, vec3 scale, int shaderProgram) : carPos(position), carVel(velocity), rotationVec(rotationalVector), rotationVel(rotationalVelocity), carScale(scale)
 	{
 		carWorldMatrix = glGetUniformLocation(shaderProgram, "worldMatrix");
-		rotationVec = vec3(0.0f, 0.0f, 0.0f); //car is "flat" by default
 		drawMode = GL_TRIANGLES;
 	}
 
@@ -45,10 +44,20 @@ public:
 		drawMode = mode;
 	}
 
+	void rePosition(vec3 position) {
+		carPos = position;
+	}
+
+	void upScale() {
+		carScale *= 1.05;
+	}
+
+	void downScale() {
+		carScale /= 1.05;
+	}
+
 	void Draw() {
-		mat4 worldMatrix = translate(mat4(1.0f), carPos) * scale(mat4(1.0f), carScale);
-		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
-		glDrawArrays(GL_TRIANGLES, 14, 36);
+		drawBody();
 	}
 
 private:
@@ -59,6 +68,22 @@ private:
 	vec3 rotationVel;
 	vec3 carScale;
 	GLenum drawMode;
+
+	void drawBody() {
+		mat4 worldMatrix = scaleAndRotate(translate(mat4(1.0f), carPos));
+
+		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
+		glDrawArrays(drawMode, 14, 36);
+	}
+
+	mat4 scaleAndRotate(mat4 translated) {
+		mat4 worldMatrix = translated * scale(mat4(1.0f), carScale);
+		if (rotationVec != vec3(0.0f, 0.0f, 0.0f)) {
+			worldMatrix = worldMatrix * rotate(mat4(1.0f), radians(5.0f), rotationVec);
+		}
+
+		return worldMatrix;
+	}
 };
 
 const char* getVertexShaderSource()
@@ -179,6 +204,7 @@ int createVertexBufferObject()
 		vec3(1.0f, 0.0f, 0.0f),		lightBlue,
 		vec3(0.0f, 0.0f, 0.0f),		lightBlue,
 
+
 		vec3(0.0f, 0.0f, 0.0f),		red,			// Line along x, red				8-9
 		vec3(1.0f, 0.0f, 0.0f),		red,
 
@@ -188,9 +214,10 @@ int createVertexBufferObject()
 		vec3(0.0f, 0.0f, 0.0f),		blue,			// Line along z, blue				12-13
 		vec3(0.0f, 0.0f, 1.0f),		blue,
 								 
-		vec3(-1.0f, 0.0f,-0.5f),	darkSlateGray,	// cube - dark gray, for body		14-49
-		vec3(-1.0f, 0.0f, 0.5f),	darkSlateGray,
-		vec3(-1.0f, 1.0f, 0.5f),	darkSlateGray,
+
+		vec3(-1.0f, 0.0f,-0.5f),	green,	// cube - dark gray, for body		14-49
+		vec3(-1.0f, 0.0f, 0.5f),	green,
+		vec3(-1.0f, 1.0f, 0.5f),	green,
 
 		vec3(-1.0f, 0.0f,-0.5f),	darkSlateGray,
 		vec3(-1.0f, 1.0f, 0.5f),	darkSlateGray,
@@ -235,55 +262,57 @@ int createVertexBufferObject()
 		vec3(1.0f, 1.0f, 0.5f), 	darkSlateGray,
 		vec3(-1.0f, 1.0f,-0.5f), 	darkSlateGray,
 		vec3(-1.0f, 1.0f, 0.5f), 	darkSlateGray,
-				
-		//
-		//vec3(-0.5f,-0.5f,-0.5f),	silver,	// cube - silver, for rest			50-63
-		//vec3(-0.5f,-0.5f, 0.5f),	silver,
-		//vec3(-0.5f, 0.5f, 0.5f),	silver,
 
-		//vec3(-0.5f,-0.5f,-0.5f),	silver,
-		//vec3(-0.5f, 0.5f, 0.5f),	silver,
-		//vec3(-0.5f, 0.5f,-0.5f),	silver,
 
-		//vec3(0.5f, 0.5f,-0.5f),		silver,
-		//vec3(-0.5f,-0.5f,-0.5f),	silver,
-		//vec3(-0.5f, 0.5f,-0.5f),	silver,
+		vec3(-0.5f, 0.0f,-0.5f),	silver,			// cube - silver, for rest			50-63
+		vec3(-0.5f, 0.0f, 0.5f),	silver,
+		vec3(-0.5f, 1.0f, 0.5f),	silver,
 
-		//vec3(0.5f, 0.5f,-0.5f),		silver,
-		//vec3(0.5f,-0.5f,-0.5f), 	silver,
-		//vec3(-0.5f,-0.5f,-0.5f), 	silver,
+		vec3(-0.5f, 0.0f,-0.5f),	silver,
+		vec3(-0.5f, 1.0f, 0.5f),	silver,
+		vec3(-0.5f, 1.0f,-0.5f),	silver,
 
-		//vec3(0.5f,-0.5f, 0.5f), 	silver,
-		//vec3(-0.5f,-0.5f,-0.5f), 	silver,
-		//vec3(0.5f,-0.5f,-0.5f), 	silver,
+		vec3(0.5f, 1.0f,-0.5f),		silver,
+		vec3(-0.5f, 0.0f,-0.5f),	silver,
+		vec3(-0.5f, 1.0f,-0.5f),	silver,
 
-		//vec3(0.5f,-0.5f, 0.5f), 	silver,
-		//vec3(-0.5f,-0.5f, 0.5f), 	silver,
-		//vec3(-0.5f,-0.5f,-0.5f), 	silver,
+		vec3(0.5f, 1.0f,-0.5f),		silver,
+		vec3(0.5f, 0.0f,-0.5f), 	silver,
+		vec3(-0.5f, 0.0f,-0.5f), 	silver,
 
-		//vec3(-0.5f, 0.5f, 0.5f), 	silver,
-		//vec3(-0.5f,-0.5f, 0.5f), 	silver,
-		//vec3(0.5f,-0.5f, 0.5f), 	silver,
+		vec3(0.5f, 0.0f, 0.5f), 	silver,
+		vec3(-0.5f, 0.0f,-0.5f), 	silver,
+		vec3(0.5f, 0.0f,-0.5f), 	silver,
 
-		//vec3(0.5f, 0.5f, 0.5f), 	silver,
-		//vec3(-0.5f, 0.5f, 0.5f), 	silver,
-		//vec3(0.5f,-0.5f, 0.5f),		silver,
+		vec3(0.5f, 0.0f, 0.5f), 	silver,
+		vec3(-0.5f, 0.0f, 0.5f), 	silver,
+		vec3(-0.5f, 0.0f,-0.5f), 	silver,
 
-		//vec3(0.5f, 0.5f, 0.5f),		silver,
-		//vec3(0.5f,-0.5f,-0.5f),		silver,
-		//vec3(0.5f, 0.5f,-0.5f),		silver,
+		vec3(-0.5f, 1.0f, 0.5f), 	silver,
+		vec3(-0.5f, 0.0f, 0.5f), 	silver,
+		vec3(0.5f, 0.0f, 0.5f), 	silver,
 
-		//vec3(0.5f,-0.5f,-0.5f),		silver,
-		//vec3(0.5f, 0.5f, 0.5f),		silver,
-		//vec3(0.5f,-0.5f, 0.5f),		silver,
+		vec3(0.5f, 1.0f, 0.5f),		silver,
+		vec3(-0.5f, 1.0f, 0.5f),	silver,
+		vec3(0.5f, 0.0f, 0.5f),		silver,
 
-		//vec3(0.5f, 0.5f, 0.5f),		silver,
-		//vec3(0.5f, 0.5f,-0.5f),		silver,
-		//vec3(-0.5f, 0.5f,-0.5f),	silver,
+		vec3(0.5f, 1.0f, 0.5f),		silver,
+		vec3(0.5f, 0.0f,-0.5f),		silver,
+		vec3(0.5f, 1.0f,-0.5f),		silver,
 
-		//vec3(0.5f, 0.5f, 0.5f),		silver,
-		//vec3(-0.5f, 0.5f,-0.5f),	silver,
-		//vec3(-0.5f, 0.5f, 0.5f),	silver,
+		vec3(0.5f, 0.0f,-0.5f),		silver,
+		vec3(0.5f, 1.0f, 0.5f),		silver,
+		vec3(0.5f, 0.0f, 0.5f), 	silver,
+
+		vec3(0.5f, 1.0f, 0.5f),		silver,
+		vec3(0.5f, 1.0f,-0.5f),		silver,
+		vec3(-0.5f, 1.0f,-0.5f),	silver,
+
+		vec3(0.5f, 1.0f, 0.5f),		silver,
+		vec3(-0.5f, 1.0f,-0.5f),	silver,
+		vec3(-0.5f, 1.0f, 0.5f),	silver,
+
+		// probably another one for wheels, idk yet?
 	};
 	    
     // Create a vertex array
@@ -367,8 +396,10 @@ int main(int argc, char*argv[])
     glUseProgram(shaderProgram);
 
     // Camera parameters for view transform
-    vec3 cameraPosition(5.0f,10.0f,5.0f);
-    vec3 cameraLookAt(0.0f, 0.0f, 0.0f);
+	vec3 initCameraPosition(5.0f, 10.0f, 5.0f);
+	vec3 initCameraLookAt(0.0f, 0.0f, 0.0f);
+	vec3 cameraPosition = initCameraPosition;
+	vec3 cameraLookAt = initCameraLookAt;
     vec3 cameraUp(0.0f, 1.0f, 0.0f);
     
     // Other camera parameters
@@ -413,9 +444,10 @@ int main(int argc, char*argv[])
 	// Main car object
 	vec3 carPosition = vec3(0.0f, 0.0f, 0.0f); //Default car position : 0,0,0
 	vec3 carVelocity = vec3(0.0f, 0.0f, 0.0f); //Honestly this one's just for whenever I implement shooting cars
+	vec3 carRotation = vec3(0.0f, 0.0f, 0.0f); //Default car rotation: 0,0,0
 	vec3 carRotationalVelocity = vec3(0.0f, 0.0f, 0.0f); //Again, the plan's just to make cars spin when I shoot 'em
 	vec3 carScale = vec3(1.0f, 1.0f, 1.0f); //This one's actually an assignment specification at least
-	Car mainCar = Car(carPosition, carVelocity, carRotationalVelocity, carScale, shaderProgram);
+	Car mainCar(carPosition, carVelocity, carRotation, carRotationalVelocity, carScale, shaderProgram);
 
 	// TODO - Shoot cars on left click lol
 	list<Car> carProjectilesList;
@@ -501,12 +533,12 @@ int main(int argc, char*argv[])
 			}
 		}
 
-        // We'll change this to be a first or third person camera
+
+
         bool fastCam = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
         float currentCameraSpeed = (fastCam) ? cameraFastSpeed : cameraSpeed;
         
-        
-        // Calculate mouse motion dx and dy
+		// Calculate mouse motion dx and dy
         // Update camera horizontal and vertical angle
         double mousePosX, mousePosY;
         glfwGetCursorPos(window, &mousePosX, &mousePosY);
@@ -542,23 +574,23 @@ int main(int argc, char*argv[])
         glm::normalize(cameraSideVector);
          
         
-        // use camera lookat and side vectors to update positions with ASDW
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) // move camera down
+        // use camera lookat and side vectors to update positions with Up/Down/Left/Right
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // move camera down
 		{
 			cameraPosition += cameraLookAt * currentCameraSpeed * dt;
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) // move camera up
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) // move camera up
 		{
 			cameraPosition -= cameraLookAt * currentCameraSpeed * dt;
 		}
 
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) // move camera to the left
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) // move camera to the left
         {
 			cameraPosition -= cameraSideVector * currentCameraSpeed * dt;
         }
         
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) // move camera to the right
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) // move camera to the right
         {
 			cameraPosition += cameraSideVector * currentCameraSpeed * dt;
         }
@@ -585,6 +617,32 @@ int main(int argc, char*argv[])
 		GLuint viewMatrixLocation = glGetUniformLocation(shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
         
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+			float randX = -20 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (40)));
+			float randZ = -20 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (40)));
+			vec3 newPos(randX, 0.0f, randZ);
+			mainCar.rePosition(newPos);
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+			mainCar.upScale();
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+			mainCar.downScale();
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+			carRotation += vec3(0.0f, 2.0f, 0.0f);
+			mainCar.setRotation(carRotation);
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+			carRotation -= vec3(0.0f, 2.0f, 0.0f);
+			mainCar.setRotation(carRotation);
+		}
+
+
 		// TODO - ADD PROJECTILE CARS
     }
 
