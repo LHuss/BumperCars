@@ -1,6 +1,6 @@
 ﻿  a1_40000298.cpp
-D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(436,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(460,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(554,62): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(555,62): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(567,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(596,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(690,62): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+D:\workspace\COMP 371\A1-COMP371\Source\a1_40000298.cpp(691,62): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
   Labs.vcxproj -> D:\workspace\COMP 371\A1-COMP371\VS2017\/../Bin/Labs-Debug.exe
