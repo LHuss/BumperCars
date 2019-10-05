@@ -111,8 +111,28 @@ int compileAndLinkShaders()
     return shaderProgram;
 }
 
+vec3 rgbToFloatV3(int r, int g, int b) {
+	return vec3((float)r / 255.0, (float)g / 255.0, (float)b / 255.0);
+}
+
 int createVertexBufferObject()
 {
+	vec3 lightBlue = rgbToFloatV3(68, 85, 90);
+
+	vec3 vertexArray[] = {
+		// position					//color
+		vec3(0.5f, 0.0f, 0.5f),		lightBlue, // Light blue square - for grid
+		vec3(0.5f, 0.0f,-0.5f),		lightBlue,
+
+		vec3(0.5f, 0.0f,-0.5f),		lightBlue,
+		vec3(-0.5f, 0.0f,-0.5f),	lightBlue,
+
+		vec3(-0.5f, 0.0f,-0.5f),	lightBlue,
+		vec3(-0.5f, 0.0f,0.5f),		lightBlue,
+
+		vec3(-0.5f, 0.0f,0.5f),		lightBlue,
+		vec3(0.5f, 0.0f,0.5f),		lightBlue,
+	};
 	    
     // Create a vertex array
     GLuint vertexArrayObject;
@@ -122,7 +142,28 @@ int createVertexBufferObject()
     
     // Upload Vertex Buffer to the GPU, keep a reference to it (vertexBufferObject)
     GLuint vertexBufferObject;
+	glGenBuffers(1, &vertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), vertexArray, GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0,                   // attribute 0 matches aPos in Vertex Shader
+		3,                   // size
+		GL_FLOAT,            // type
+		GL_FALSE,            // normalized?
+		2 * sizeof(vec3), // stride - each vertex contain 2 vec3 (position, color)
+		(void*)0             // array buffer offset
+	);
+	glEnableVertexAttribArray(0);
+
+
+	glVertexAttribPointer(1,                            // attribute 1 matches aColor in Vertex Shader
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		2 * sizeof(vec3),
+		(void*)sizeof(vec3)      // color is offseted a vec3 (comes after position)
+	);
+	glEnableVertexAttribArray(1);
     
     return vertexBufferObject;
 }
@@ -232,8 +273,22 @@ int main(int argc, char*argv[])
         // Draw geometry
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-        // Draw grid
-        
+		// Draw grid
+		mat4 groundWorldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f)) * scale(mat4(1.0f), vec3(1.0f, 0.02f, 1.0f));
+		GLuint worldMatrixLocation = glGetUniformLocation(shaderProgram, "worldMatrix");
+		glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &groundWorldMatrix[0][0]);
+
+		glDrawArrays(GL_LINES, 0, 8); // 8 vertices (2 per line), starting at index 0
+
+		for (int i = -50; i < 50; i++) {
+			for (int j = -50; j < 50; j++) {
+				if (i == 0 && j == 0) { continue; } // "center" tile already drawn above
+
+				groundWorldMatrix = translate(mat4(1.0f), vec3(0.0f + i, 0.0f, 0.0f + j)) * scale(mat4(1.0f), vec3(1.0f, 0.02f, 1.0f));
+				glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &groundWorldMatrix[0][0]);
+				glDrawArrays(GL_LINES, 0, 8);
+			}
+		}
 
         // Draw in view space for first person camera
 		// TODO
