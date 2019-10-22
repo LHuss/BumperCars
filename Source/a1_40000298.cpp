@@ -85,39 +85,34 @@ private:
 	float wheelAngle;
 
 	void drawBody() {
-		mat4 worldMatrix = scaleAndRotate(translate(mat4(1.0f), carPos));
+		vec3 centerShift = vec3(0.0f, 0.0f, 0.0f);
+		mat4 worldMatrix = scaleRotateAndShift(centerShift);
 
 		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
 		glDrawArrays(drawMode, 14, 36);
 	}
 
 	void drawRoof() {
-		vec3 roofShift = vec3(0.0f, 1.0f, 0.0f) * carScale;
-		vec3 roofPos = carPos + shiftDueToRotation(roofShift);
-		mat4 roofMatrix = translate(mat4(1.0f), roofPos) * scale(mat4(1.0f), vec3(1.0f, 0.5f, 0.5f));
-		mat4 worldMatrix = scaleAndRotate(roofMatrix);
+		vec3 roofShift = vec3(0.0f, 1.0f, 0.0f);
+		mat4 roofMatrix = scaleRotateAndShift(roofShift) * scale(mat4(1.0f), vec3(1.0f, 0.5f, 0.5f));
 
-		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
+		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &roofMatrix[0][0]);
 		glDrawArrays(drawMode, 50, 36);
 	}
 
 	void drawBonnet() {
-		vec3 bonnetShift = vec3(1.3625f, 0.0f, 0.0f) * carScale;
-		vec3 bonnetPos = carPos + shiftDueToRotation(bonnetShift);
-		mat4 bonnetMatrix = translate(mat4(1.0f), bonnetPos) * scale(mat4(1.0f), vec3(0.75f, 0.6f, 1.0f));
-		mat4 worldMatrix = scaleAndRotate(bonnetMatrix);
+		vec3 bonnetShift = vec3(1.3625f, 0.0f, 0.0f);
+		mat4 bonnetMatrix = scaleRotateAndShift(bonnetShift) * scale(mat4(1.0f), vec3(0.75f, 0.6f, 1.0f));
 
-		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
+		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &bonnetMatrix[0][0]);
 		glDrawArrays(drawMode, 50, 36);
 	}
 
 	void drawTrunk() {
-		vec3 trunkShift = vec3(-1.25f, 0.0f, 0.0f) * carScale;
-		vec3 trunkPos = carPos + shiftDueToRotation(trunkShift);
-		mat4 trunkMatrix = translate(mat4(1.0f), trunkPos) * scale(mat4(1.0f), vec3(0.5f, 0.8f, 1.0f));
-		mat4 worldMatrix = scaleAndRotate(trunkMatrix);
+		vec3 trunkShift = vec3(-1.25f, 0.0f, 0.0f);
+		mat4 trunkMatrix = scaleRotateAndShift(trunkShift) * scale(mat4(1.0f), vec3(0.5f, 0.8f, 1.0f));
 
-		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
+		glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &trunkMatrix[0][0]);
 		glDrawArrays(drawMode, 50, 36);
 	}
 
@@ -126,53 +121,24 @@ private:
 		float zPos[] = { -0.5f, 0.5f };
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 2; j++) {
-				vec3 wheelShift = vec3(xPos[i], 0.0f, zPos[j]) * carScale;
-				vec3 wheelPos = carPos + shiftDueToRotation(wheelShift);
-				mat4 wheelMatrix = translate(mat4(1.0f), wheelPos) * rotate(mat4(1.0f), radians(wheelAngle), vec3(0.0f, 0.0f, -1.0f));
-				mat4 worldMatrix = scaleAndRotate(wheelMatrix);
+				vec3 wheelShift = vec3(xPos[i], 0.0f, zPos[j]);
+				mat4 wheelMatrix = scaleRotateAndShift(wheelShift) * rotate(mat4(1.0f), radians(wheelAngle), vec3(0.0f, 0.0f, -1.0f));
 
-				glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &worldMatrix[0][0]);
+				glUniformMatrix4fv(carWorldMatrix, 1, GL_FALSE, &wheelMatrix[0][0]);
 				glDrawArrays(drawMode, 86, 36);
 			}
 		}
 	}
 
-	// This is all kinds of wrong, but my brain doesn't want to understand how math works
-	// So I guess it's a feature for now...
-	// I'm hours in at this point and I can't... Wtf is you doing, brain?
-	// Whatever, this is GG I guess...
-	vec3 shiftDueToRotation(vec3 unshifted) {
-		float xAngle = radians(rotationVec.x * angleStepSize); // affects tilt (yz)
-		float zAngle = radians(rotationVec.z * angleStepSize); // affects updown (xy)
-		float yAngle = radians(rotationVec.y * angleStepSize); // affects sideways (xz)
-		vec3 shifted(0.0f, 0.0f, 0.0f);
-
-		// Probably needed to use radius somehow, but honestly nothing's working anyways so I give in
-		float radius = sqrtf(powf(unshifted.x, 2) + powf(unshifted.y, 2) + powf(unshifted.z, 2));
-
-		// Shifts due to x angle:
-		shifted.x += unshifted.x * cosf(xAngle);
-		shifted.z += unshifted.x * sinf(xAngle);
-
-		// Shifts due to y angle:
-		shifted.y += unshifted.y * cosf(yAngle);
-		shifted.z += unshifted.y * sinf(yAngle);
-
-		// Shifts due to z angle:
-		shifted.z += unshifted.z * cosf(zAngle);
-		shifted.x += unshifted.z * sinf(zAngle);
-
-		return shifted;
-	}
-
-	mat4 scaleAndRotate(mat4 baseMatrix) {
-		mat4 worldMatrix = baseMatrix * scale(mat4(1.0f), carScale);
+	mat4 scaleRotateAndShift(vec3 shiftFromCenter) {
+		mat4 worldMatrix = translate(mat4(1.0f), carPos) * scale(mat4(1.0f), carScale);
 		if (rotationVec != vec3(0.0f, 0.0f, 0.0f)) {
 			worldMatrix = worldMatrix 
 				* rotate(mat4(1.0f), radians(angleStepSize * rotationVec.x), vec3(1.0f, 0.0f, 0.0f))
 				* rotate(mat4(1.0f), radians(angleStepSize * rotationVec.y), vec3(0.0f, 1.0f, 0.0f))
 				* rotate(mat4(1.0f), radians(angleStepSize * rotationVec.z), vec3(0.0f, 0.0f, 1.0f));
 		}
+		worldMatrix = worldMatrix * translate(mat4(1.0f), shiftFromCenter);
 
 		return worldMatrix;
 	}
@@ -570,7 +536,7 @@ int main(int argc, char*argv[])
 
     // Set initial view matrix
     mat4 viewMatrix = lookAt(cameraPosition,				 // eye
-                             cameraPosition + cameraLookAt,  // center
+                             initCameraLookAt,  // center
                              cameraUp );					 // up
     
     GLuint viewMatrixLocation = glGetUniformLocation(shaderProgram, "viewMatrix");
@@ -583,7 +549,7 @@ int main(int argc, char*argv[])
     
     // For frame time
     float lastFrameTime = glfwGetTime();
-    int lastMouseLeftState = GLFW_RELEASE;
+    int lastKey5State = GLFW_RELEASE;
     double lastMousePosX, lastMousePosY;
     glfwGetCursorPos(window, &lastMousePosX, &lastMousePosY);
     
@@ -610,6 +576,7 @@ int main(int argc, char*argv[])
 	bool isHoldingRight = false;
 	bool isHoldingLeft = false;
 	bool isHoldingMiddle = false;
+	vec3 frozenCameraLookAt;
 	float cameraPanSpeed = 15.0f;
 	float cameraTiltSpeed = 20.0f;
 
@@ -728,7 +695,7 @@ int main(int argc, char*argv[])
 
 
 		// use camera lookat and side vectors to update positions with Up/Down/Left/Right
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // move camera down
+ 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // move camera down
 		{
 			cameraPosition += cameraLookAt * currentCameraSpeed * dt;
 		}
@@ -756,12 +723,13 @@ int main(int argc, char*argv[])
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 			if (isHoldingLeft) {
-				cameraPosition -= cameraLookAt * (float) dy;
+				cameraPosition -= frozenCameraLookAt * (float) dy;
 			}
 			isHoldingLeft = true;
 		}
 		else {
 			isHoldingLeft = false;
+			frozenCameraLookAt = cameraLookAt;
 		}
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
@@ -788,7 +756,12 @@ int main(int argc, char*argv[])
 
 		// Set the view matrix.
 		mat4 viewMatrix(1.0f);
-		viewMatrix = lookAt(cameraPosition, cameraPosition + cameraLookAt, cameraUp);
+		if (isHoldingLeft) {
+			viewMatrix = lookAt(cameraPosition, cameraPosition + frozenCameraLookAt, cameraUp);
+		}
+		else {
+			viewMatrix = lookAt(cameraPosition, cameraPosition + cameraLookAt, cameraUp);
+		}
 		GLuint viewMatrixLocation = glGetUniformLocation(shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
@@ -870,51 +843,51 @@ int main(int argc, char*argv[])
 			}
 		}
 
-		// R, G - Rotate car along z-axis
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-			if ((curTime - minKeyWait) > lastR) {
-				carRotation += vec3(1.0f, 0.0f, 0.0f);
-				mainCar.setRotation(carRotation);
-				lastR = curTime;
-			}
-		}
+		// R, G - Rotate car along y-axis
 		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 			if ((curTime - minKeyWait) > lastG) {
-				carRotation -= vec3(1.0f, 0.0f, 0.0f);
+				carRotation += vec3(0.0f, 0.0f, 1.0f);
 				mainCar.setRotation(carRotation);
 				lastG = curTime;
 			}
 		}
-
-		// F, H - Rotate car along y-axis
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-			if ((curTime - minKeyWait) > lastF) {
-				carRotation += vec3(0.0f, 0.0f, 1.0f);
-				mainCar.setRotation(carRotation);
-				lastF = curTime;
-			}
-		}
-		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-			if ((curTime - minKeyWait) > lastH) {
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			if ((curTime - minKeyWait) > lastR) {
 				carRotation -= vec3(0.0f, 0.0f, 1.0f);
 				mainCar.setRotation(carRotation);
+				lastR = curTime;
+			}
+		}
+
+		// F, H - Rotate car along z-axis
+		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+			if ((curTime - minKeyWait) > lastH) {
+				carRotation += vec3(1.0f, 0.0f, 0.0f);
+				mainCar.setRotation(carRotation);
 				lastH = curTime;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+			if ((curTime - minKeyWait) > lastF) {
+				carRotation -= vec3(1.0f, 0.0f, 0.0f);
+				mainCar.setRotation(carRotation);
+				lastF = curTime;
 			}
 		}
 #pragma endregion
 #pragma endregion
 
 		// ADD PROJECTILE CARS
-		if (lastMouseLeftState == GLFW_RELEASE && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		if (lastKey5State == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
 			const float projectileSpeed = 5.0f;
 			
-			Car projectile(cameraPosition, cameraLookAt*projectileSpeed, vec3(0.0f, 0.0f, 0.0f), vec3(10.0f, 0.0f, 0.0f), vec3(0.1f, 0.1f, 0.1f), shaderProgram);
+			Car projectile(cameraPosition, cameraLookAt*projectileSpeed, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, -10.0f), vec3(0.1f, 0.1f, 0.1f), shaderProgram);
 			if (carProjectilesList.size() > 10) {
 				carProjectilesList.pop_front();
 			}
 			carProjectilesList.push_back(projectile);
 		}
-		lastMouseLeftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+		lastKey5State = glfwGetKey(window, GLFW_KEY_5);
 #pragma endregion
     }
 
