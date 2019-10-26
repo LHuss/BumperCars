@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Renderer.h"
 
 #include <vector>
 
@@ -24,6 +25,7 @@ public:
 	void SetColor(glm::vec3 color);
 	void SetColorFromRGB(int r, int g, int b);
 	void SetDrawMode(GLenum drawMode);
+	void SetTexture(TextureType texture);
 
 	void UpScale();
 	void DownScale();
@@ -35,6 +37,7 @@ public:
 	glm::vec3 GetRotation() const { return mRotation; }
 	glm::vec3 GetColor() const { return mColor; }
 	GLenum GetDrawMode() const { return mDrawMode; }
+	TextureType GetTexture() const { return mTexture; }
 
 	glm::vec3 ComputeColorFromRGB(int r, int g, int b);
 
@@ -52,4 +55,6 @@ protected:
 	GLenum mDrawMode;
 
 	float mAngleStepSize = 5.0f;
+
+	TextureType mTexture;
 };

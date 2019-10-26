@@ -1,5 +1,6 @@
 #include "AxisModel.h"
 #include "Renderer.h"
+#include "World.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -66,6 +67,18 @@ void AxisModel::Update(float dt) {
 
 void AxisModel::Draw()
 {
+	// Swap Shaders
+	unsigned int currentShader = Renderer::GetCurrentShader();
+	Renderer::SetShader(ShaderType::SHADER_SOLID_COLOR);
+
+	glUseProgram(Renderer::GetShaderProgramID());
+
+	// Update ViewProjection of this shader program
+	mat4 VP = World::GetViewProjectionMatrix();
+	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+
+	//Draw
 	glBindVertexArray(mVertexArray);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
 
@@ -73,5 +86,9 @@ void AxisModel::Draw()
 
 	mat4 axeWorldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f)) * scale(mat4(1.0f), vec3(5.0f, 5.0f, 5.0f));
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &axeWorldMatrix[0][0]);
-	glDrawArrays(GL_LINES, 0, 6); 
+	glDrawArrays(GL_LINES, 0, 6);
+
+	// Swap Back
+	Renderer::SetShader(ShaderType(currentShader));
+	glUseProgram(Renderer::GetShaderProgramID());
 }

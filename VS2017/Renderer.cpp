@@ -24,6 +24,7 @@ using namespace std;
 #include "EventManager.h"
 
 #include <GLFW/glfw3.h>
+#include <FreeImageIO.h>
 
 
 #if defined(PLATFORM_OSX)
@@ -33,6 +34,8 @@ using namespace std;
 
 std::vector<unsigned int> Renderer::sShaderProgramID;
 unsigned int Renderer::sCurrentShader;
+
+std::vector<unsigned int> Renderer::sTextureID;
 
 GLFWwindow* Renderer::spWindow = nullptr;
 
@@ -78,8 +81,43 @@ void Renderer::Initialize()
 		LoadShaders(shaderPathPrefix + "SolidColor.vertexshader",
 			shaderPathPrefix + "SolidColor.fragmentshader")
 	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Textured.vertexshader",
+			shaderPathPrefix + "Textured.fragmentshader")
+	);
 
 	sCurrentShader = 0;
+
+	// Loading Textures
+#if defined(PLATFORM_OSX)
+	std::string texturePathPrefix = "Textures/";
+#else
+	std::string texturePathPrefix = "../Assets/Textures/";
+#endif
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "brick.jpg")[0])
+	);
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "cement.jpg")[0])
+	);
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "grass.bmp")[0])
+	);
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "steel.jpg")[0])
+	);
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "tire.jpg")[0])
+	);
+
+	sTextureID.push_back(
+		LoadTexture(&(texturePathPrefix + "wood.png")[0])
+	);
 
 }
 
@@ -118,6 +156,10 @@ void Renderer::SetShader(ShaderType type)
 	{
 		sCurrentShader = type;
 	}
+}
+
+unsigned int Renderer::GetTextureID(TextureType texture) {
+	return sTextureID[texture];
 }
 
 //
@@ -208,6 +250,43 @@ GLuint Renderer::LoadShaders(std::string vertex_shader_path, std::string fragmen
 	glDeleteShader(FragmentShaderID);
 
 	return ProgramID;
+}
+
+GLuint Renderer::LoadTexture(char* texture_path) {
+	// Load image using the Free Image library
+	FREE_IMAGE_FORMAT format = FreeImage_GetFileType(texture_path, 0);
+	FIBITMAP* image = FreeImage_Load(format, texture_path);
+	FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
+
+	// Get an available texture index from OpenGL
+	GLuint textureID = 0;
+	glGenTextures(1, &textureID);
+	assert(textureID != 0);
+
+	// Set OpenGL filtering properties (bi-linear interpolation)
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Retrieve width and hight
+	int width = FreeImage_GetWidth(image32bits);
+	int height = FreeImage_GetHeight(image32bits);
+
+	// This will upload the texture to the GPU memory
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height,
+		0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(image32bits));
+
+	// Free images
+	FreeImage_Unload(image);
+	FreeImage_Unload(image32bits);
+
+	return textureID;
+}
+
+bool Renderer::ShaderNeedsTexture() {
+	ShaderType shadersThatNeedTexture[1] = { SHADER_TEXTURED };
+	ShaderType *found = std::find(std::begin(shadersThatNeedTexture), std::end(shadersThatNeedTexture), ShaderType(GetCurrentShader()));
+	return found != std::end(shadersThatNeedTexture);
 }
 
 bool Renderer::PrintError()

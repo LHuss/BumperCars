@@ -18,7 +18,8 @@ Model::Model():
 	mCenterPosition(0.0f, 0.0f, 0.0f), mCenterShift(1.0f, 1.0f, 1.0f), 
 	mSizeScale(1.0f, 1.0f, 1.0f), mShapeScale(1.0f, 1.0f, 1.0f),
 	mRotation(0.0f, 0.0f, 0.0f), mColor(0.5f, 0.5f, 0.5f),
-	mDrawMode(GL_TRIANGLES), mRotationVelocity(0.0f, 0.0f, 0.0f) {
+	mDrawMode(GL_TRIANGLES), mRotationVelocity(0.0f, 0.0f, 0.0f),
+	mTexture(TEXTURE_BRICK){
 }
 
 Model::~Model() {
@@ -80,6 +81,10 @@ void Model::SetColorFromRGB(int r, int g, int b) {
 
 void Model::SetDrawMode(GLenum drawMode) {
 	mDrawMode = drawMode;
+}
+
+void Model::SetTexture(TextureType texture) {
+	mTexture = texture;
 }
 
 void Model::UpScale() {

@@ -31,6 +31,7 @@ private:
 	float mSpeed;			// World units per second
 	float mPanSpeed;
 	float mTiltSpeed;
+	float mZoomSpeed;
 	float mAngularSpeed;    // Degrees per pixel
 
 	bool mIsHoldingLeft;
@@ -39,4 +40,5 @@ private:
 
 	glm::vec3 mLookAt;
 	glm::vec3 mFrozenLookAt;
+	glm::vec3 mFrozenPosition;
 };

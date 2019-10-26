@@ -30,6 +30,7 @@ CarModel::CarModel(
 		rotation, darkSlateGray
 	);
 	cModels.push_back(body);
+	body->SetTexture(TextureType::TEXTURE_STEEL);
 
 	vec3 roofShift = vec3(0.0f, 1.0f, 0.0f);
 	vec3 roofShape = vec3(1.0f, 0.5f, 0.5f) * shapeScale;
@@ -39,6 +40,7 @@ CarModel::CarModel(
 		rotation, silver
 	);
 	cModels.push_back(roof);
+	roof->SetTexture(TextureType::TEXTURE_STEEL);
 
 	vec3 bonnetShift = vec3(1.3625f, 0.0f, 0.0f);
 	vec3 bonnetShape = vec3(0.75f, 0.6f, 1.0f) * shapeScale;
@@ -48,6 +50,7 @@ CarModel::CarModel(
 		rotation, silver
 	);
 	cModels.push_back(bonnet);
+	bonnet->SetTexture(TextureType::TEXTURE_STEEL);
 
 	vec3 trunkShift = vec3(-1.25f, 0.0f, 0.0f);
 	vec3 trunkShape = vec3(0.5f, 0.8f, 1.0f) * shapeScale;
@@ -57,6 +60,7 @@ CarModel::CarModel(
 		rotation, silver
 	);
 	cModels.push_back(trunk);
+	trunk->SetTexture(TextureType::TEXTURE_WOOD);
 
 
 	float xPos[] = { -0.6f, 0.6f };
@@ -72,6 +76,9 @@ CarModel::CarModel(
 				rotation, gold
 			);
 			cModels.push_back(wheels[pos]);
+
+			wheels[pos]->SetTexture(TextureType::TEXTURE_TIRE);
+
 			pos++;
 		}
 	}

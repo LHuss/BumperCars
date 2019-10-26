@@ -15,54 +15,54 @@ CubeModel::CubeModel(
 	mRotation = rotation;
 	mColor = color;
 	
-	Vertex vertexBuffer[] = {  // position,					normal,                  color     
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
+	Vertex vertexBuffer[] = {  // position,					normal,						color,  aUV  
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f), mColor },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f), mColor },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f), mColor },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f), mColor },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f), mColor },
+								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor },
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f), mColor }
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) }
 	};
 
 	// Create a vertex array
@@ -78,7 +78,7 @@ CubeModel::CubeModel(
 
 	// 1st attribute buffer : vertex Positions
 	glVertexAttribPointer(0,                // attribute. No particular reason for 0, but must match the layout in the shader.
-		3,                // size
+		4,                // size
 		GL_FLOAT,        // type
 		GL_FALSE,        // normalized?
 		sizeof(Vertex), // stride
@@ -88,7 +88,7 @@ CubeModel::CubeModel(
 
 	// 2nd attribute buffer : vertex normal
 	glVertexAttribPointer(1,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(Vertex),
@@ -96,16 +96,25 @@ CubeModel::CubeModel(
 	);
 	glEnableVertexAttribArray(1);
 
-
 	// 3rd attribute buffer : vertex color
 	glVertexAttribPointer(2,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(Vertex),
 		(void*)(2 * sizeof(vec3)) // Color is Offseted by 2 vec3 (see class Vertex)
 	);
 	glEnableVertexAttribArray(2);
+
+	// 4th attribute buffer : aUV
+	glVertexAttribPointer(3,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		(void*)(3 * sizeof(vec3)) // uAV is Offseted by 3 vec3 (see class Vertex)
+	);
+	glEnableVertexAttribArray(3);
 }
 
 CubeModel::~CubeModel() {
@@ -119,6 +128,10 @@ void CubeModel::Update(float dt) {
 
 void CubeModel::Draw()
 {
+	if (Renderer::ShaderNeedsTexture()) {
+		glBindTexture(GL_TEXTURE_2D, Renderer::GetTextureID(mTexture));
+	}
+
 	glBindVertexArray(mVertexArray);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
 

@@ -71,17 +71,6 @@ void World::Update(float dt)
 {
 	GLFWwindow* window = EventManager::GetWindow();
 	// User Inputs
-	// 0 1 2 to change the Camera [disabled for now]
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-	{
-		mCurrentCamera = 0;
-	}
-
-	// Spacebar to change the shader
-	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_SOLID_COLOR);
-	}
 
 	// Update current Camera
 	mCamera[mCurrentCamera]->Update(dt);
@@ -114,35 +103,40 @@ void World::Update(float dt)
 
 	// P, L, T - Change draw modes for the car
 	GLenum drawMode = car->GetDrawMode();
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_P)) {
 		drawMode = GL_POINTS;
 	}
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_L)) {
 		drawMode = GL_LINES;
 	}
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_T)) {
 		drawMode = GL_TRIANGLES;
 	}
 	car->SetDrawMode(drawMode);
 
 	// HOME - Reset car
-	if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_HOME)) {
 		car->Reset();
+	}
+
+	// X - Toggle between SolidColor and Textured shaders
+	// Default (if any other shader is in use) - Turn on Textured shader
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_X)) {
+		ShaderType shaderToggle = ShaderType::SHADER_TEXTURED;
+		if (ShaderType(Renderer::GetCurrentShader()) == shaderToggle) {
+			shaderToggle = ShaderType::SHADER_SOLID_COLOR;
+		}
+
+		Renderer::SetShader(shaderToggle);
 	}
 
 	// SPACE - Draw car  randomly in a 40 block radius around the center
 	// Could be 50, but I didn't like it when it spawned on the edge
-	float curTime = glfwGetTime();
-	const float minKeyWait = EventManager::GetMinKeyWait();
-	float lastSpace = EventManager::GetLastSpace();
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		if ((curTime - minKeyWait) > lastSpace) {
-			float randX = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
-			float randZ = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
-			carPosition = vec3(randX, 0.25f, randZ);
-			car->SetCenterPosition(carPosition);
-			EventManager::SetLastSpace(curTime);
-		}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_SPACE)) {
+		float randX = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
+		float randZ = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
+		carPosition = vec3(randX, 0.25f, randZ);
+		car->SetCenterPosition(carPosition);
 	}
 
 	// U, J - Scale Up/Down car respectively
@@ -216,7 +210,7 @@ void World::Draw()
 	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
+	mat4 VP = GetViewProjectionMatrix();
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Draw models
@@ -256,4 +250,8 @@ void World::InitializeModels() {
 
 	AxisModel* axis = new AxisModel();
 	staticModels.push_back(axis);
+}
+
+mat4 World::GetViewProjectionMatrix() {
+	return instance->GetCurrentCamera()->GetViewProjectionMatrix();
 }

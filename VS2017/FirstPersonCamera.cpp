@@ -18,7 +18,7 @@
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) : Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mFrozenLookAt(mLookAt), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mPanSpeed(2.0f), mTiltSpeed(3.0f), mAngularSpeed(2.5f), mIsHoldingLeft(false), mIsHoldingMiddle(false), mIsHoldingRight(false)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) : Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mFrozenLookAt(mLookAt), mFrozenPosition(mPosition), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mPanSpeed(2.0f), mTiltSpeed(3.0f), mZoomSpeed(0.05f), mAngularSpeed(2.5f), mIsHoldingLeft(false), mIsHoldingMiddle(false), mIsHoldingRight(false)
 {
 }
 
@@ -66,38 +66,40 @@ void FirstPersonCamera::Update(float dt)
 	GLFWwindow* window = EventManager::GetWindow();
 
 	// A S D W for motion along the camera basis vectors
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_UP) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		mPosition += mLookAt * dt * mSpeed;
 	}
 
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_DOWN) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
 		mPosition -= mLookAt * dt * mSpeed;
 	}
 
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 	{
 		mPosition += sideVector * dt * mSpeed;
 	}
 
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 	{
 		mPosition -= sideVector * dt * mSpeed;
 	}
 
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 		if (mIsHoldingLeft) {
-			mPosition -= mFrozenLookAt * (float)dy;
+			// mPosition -= mFrozenLookAt * (float)dy;
+			mZoomFactor = max(0.5f, min(mZoomFactor + mZoomSpeed * (float)dy, 1.5f));
 		}
 		mIsHoldingLeft = true;
 	}
 	else {
 		mIsHoldingLeft = false;
 		mFrozenLookAt = mLookAt;
+		mFrozenPosition = mPosition;
 	}
 
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		if (mIsHoldingRight) {
 			mPosition -= sideVector * (float)dx * mPanSpeed * dt;
 		}
@@ -107,7 +109,7 @@ void FirstPersonCamera::Update(float dt)
 		mIsHoldingRight = false;
 	}
 
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS) {
 		if (mIsHoldingMiddle) {
 			mPosition += vec3(0.0f, dy, 0.0f) * mTiltSpeed * dt;
 		}
@@ -122,7 +124,8 @@ glm::mat4 FirstPersonCamera::GetViewMatrix() const
 {
 	mat4 viewMatrix(1.0f);
 	if (mIsHoldingLeft) {
-		viewMatrix = glm::lookAt(mPosition, mPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
+		// viewMatrix = glm::lookAt(mPosition, mPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
+		viewMatrix = glm::lookAt(mFrozenPosition, mFrozenPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
 	}
 	else {
 		viewMatrix = glm::lookAt(mPosition, mPosition + mLookAt, vec3(0.0f, 1.0f, 0.0f));

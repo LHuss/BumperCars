@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <list>
@@ -31,6 +32,8 @@ public:
 	void InitializeModels();
 
 	const Camera* GetCurrentCamera() const;
+
+	static glm::mat4 GetViewProjectionMatrix();
 
 private:
 	static World* instance;

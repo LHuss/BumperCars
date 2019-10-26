@@ -20,7 +20,7 @@ float  EventManager::sFrameTime = 0.0f;
 
 // Key Delays
 const float EventManager::sMinKeyWait = 0.250f;
-float EventManager::sLastSpace = -0.250f;
+map<int, float> EventManager::sKeyMap;
 
 // Resolutions
 std::vector<WindowResolution> EventManager::sPossibleResolutions;
@@ -125,7 +125,7 @@ void EventManager::Update()
 	sLastFrameTime = currentTime;
 
 	// Change resolution
-	if (glfwGetKey(spWindow, GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS) {
+	if (glfwGetKey(spWindow, GLFW_KEY_GRAVE_ACCENT) == GLFW_PRESS && CanUseKey(GLFW_KEY_GRAVE_ACCENT)) {
 		ToggleResolution();
 	}
 }
@@ -150,8 +150,15 @@ float EventManager::GetMinKeyWait() {
 	return sMinKeyWait;
 }
 
-float EventManager::GetLastSpace() {
-	return sLastSpace;
+bool EventManager::CanUseKey(int key) {
+	float time = glfwGetTime();
+	map<int, float>::iterator kv = sKeyMap.find(key);
+	if ((kv == sKeyMap.end()) || ((time - sMinKeyWait) > kv->second)) {
+		sKeyMap[key] = time;
+		return true;
+	} 
+
+	return false;
 }
 
 bool EventManager::ExitRequested()
@@ -193,8 +200,4 @@ float EventManager::GetRandomFloat(float min, float max)
 	float value = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 	return min + value * (max - min);
-}
-
-void EventManager::SetLastSpace(float lastSpace) {
-	sLastSpace = lastSpace;
 }

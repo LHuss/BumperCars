@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 
 struct GLFWwindow;
 
@@ -28,9 +29,7 @@ public:
 	static float GetMouseMotionY();
 
 	static float GetMinKeyWait();
-	static float GetLastSpace();
-
-	static void SetLastSpace(float lastSpace);
+	static bool CanUseKey(int key);
 
 	static void EnableMouseCursor();
 	static void DisableMouseCursor();
@@ -42,7 +41,7 @@ private:
 
 	// Key Delays
 	const static float sMinKeyWait;
-	static float sLastSpace;
+	static std::map<int, float> sKeyMap;
 
 	// Window Resolution
 	static std::vector<WindowResolution> sPossibleResolutions;

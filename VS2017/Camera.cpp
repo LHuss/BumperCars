@@ -14,7 +14,7 @@
 
 using namespace glm;
 
-Camera::Camera()
+Camera::Camera() : mZoomFactor(1.0f)
 {
 }
 
@@ -41,5 +41,6 @@ mat4 Camera::GetViewProjectionMatrix() const
 mat4 Camera::GetProjectionMatrix() const
 {
 	WindowResolution res = EventManager::GetWindowResolution();
-	return perspective(radians(90.0f), (float)res.width / (float)res.height, 0.1f, 100.0f);
+
+	return perspective(radians(90.0f) * mZoomFactor, (float)res.width / (float)res.height, 0.1f, 100.0f);
 }

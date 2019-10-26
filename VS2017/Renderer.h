@@ -16,8 +16,19 @@ struct GLFWwindow;
 enum ShaderType
 {
 	SHADER_SOLID_COLOR,
-	SHADER_SHADER,
+	SHADER_TEXTURED,
 	NUM_SHADERS
+};
+
+enum TextureType
+{
+	TEXTURE_BRICK,
+	TEXTURE_CEMENT,
+	TEXTURE_GRASS,
+	TEXTURE_STEEL,
+	TEXTURE_TIRE,
+	TEXTURE_WOOD,
+	NUM_TEXTURES
 };
 
 
@@ -32,18 +43,26 @@ public:
 
 	static GLuint LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path);
 
+	static GLuint LoadTexture(char* texture_path);
+
 	static unsigned int GetShaderProgramID() { return sShaderProgramID[sCurrentShader]; }
 	static unsigned int GetCurrentShader() { return sCurrentShader; }
 	static void SetShader(ShaderType type);
 
+	static unsigned int GetTextureID(TextureType texture);
+
 	static void CheckForErrors();
 	static bool PrintError();
+
+	static bool ShaderNeedsTexture();
 
 private:
 	static GLFWwindow* spWindow;
 
 	static std::vector<unsigned int> sShaderProgramID;
 	static unsigned int sCurrentShader;
+
+	static std::vector<unsigned int> sTextureID;
 
 };
 
