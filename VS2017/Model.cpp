@@ -18,7 +18,8 @@ using namespace glm;
 Model::Model():
 	mCenterPosition(0.0f, 0.0f, 0.0f), mCenterShift(1.0f, 1.0f, 1.0f), 
 	mSizeScale(1.0f, 1.0f, 1.0f), mShapeScale(1.0f, 1.0f, 1.0f),
-	mRotation(0.0f, 0.0f, 0.0f), mColor(0.5f, 0.5f, 0.5f),
+	mRotation(0.0f, 0.0f, 0.0f), mPointRotation(0.0f, 0.0f, 0.0f),
+	mColor(0.5f, 0.5f, 0.5f),
 	mDrawMode(GL_TRIANGLES), mRotationVelocity(0.0f, 0.0f, 0.0f),
 	mTexture(TEXTURE_BRICK){
 }
@@ -38,18 +39,24 @@ glm::mat4 Model::GetWorldMatrix() const {
 	mat4 centerT = translate(mat4(1.0f), mCenterPosition);
 	mat4 sizeS = scale(mat4(1.0f), mSizeScale);
 
-	mat4 rot = mat4(1.0f)
-		* rotate(mat4(1.0f), radians(mRotation.x), vec3(1.0f, 0.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mRotation.y), vec3(0.0f, 1.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mRotation.z), vec3(0.0f, 0.0f, 1.0f));
+	mat4 rot = ComputeRotationMatrix(mRotation);
 
 	mat4 shift = translate(mat4(1.0f), mCenterShift);
 
 	mat4 shapeS = scale(mat4(1.0f), mShapeScale);
 
-	worldMatrix = worldMatrix * centerT * sizeS * rot * shift * shapeS;
+	mat4 pointRot = ComputeRotationMatrix(mPointRotation);
+
+	worldMatrix = worldMatrix * centerT * sizeS * rot * shift * shapeS * pointRot;
 
 	return worldMatrix;
+}
+
+mat4 Model::ComputeRotationMatrix(vec3 rotation) const {
+	return mat4(1.0f)
+		* rotate(mat4(1.0f), radians(rotation.x), vec3(1.0f, 0.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(rotation.y), vec3(0.0f, 1.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(rotation.z), vec3(0.0f, 0.0f, 1.0f));
 }
 
 void Model::SetCenterPosition(glm::vec3 position) {
@@ -69,7 +76,28 @@ void Model::SetSizeScale(glm::vec3 size) {
 }
 
 void Model::SetRotation(glm::vec3 rotation) {
-	mRotation = vec3(fmod(rotation.x, 360), fmod(rotation.y, 360), fmod(rotation.z, 180));
+	mRotation = BindRotation(rotation);
+}
+
+void Model::SetPointRotation(glm::vec3 rotation) {
+	mPointRotation = BindRotation(rotation);
+}
+
+vec3 Model::BindRotation(glm::vec3 rotation) {
+	float x = fmod(rotation.x, 360);
+	if (x < 0) {
+		x += 360;
+	}
+	float y = fmod(rotation.y, 360);
+	if (y < 0) {
+		y += 360;
+	}
+	float z = fmod(rotation.z, 360);
+	if (z < 0) {
+		z += 360;
+	}
+	return vec3(x, y, z);
+
 }
 
 void Model::SetColor(glm::vec3 color) {

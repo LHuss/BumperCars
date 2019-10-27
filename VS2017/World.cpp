@@ -88,20 +88,29 @@ void World::Update(float dt)
 	// W, A, S, D - Directional Movement
 	float carSpeed = 5.0f;
 	float carMovement = carSpeed * dt;
-	vec3 distanceShift = vec3(0.0f, 0.0f, 0.0f);
+	float distanceShift = 0.0f;
+	bool isMoving = false;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		distanceShift += vec3(carMovement, 0.0f, 0.0f);
+		distanceShift += carMovement;
+		isMoving = true;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		distanceShift -= vec3(carMovement, 0.0f, 0.0f);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		distanceShift += vec3(0.0f, 0.0f, carMovement);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		distanceShift -= vec3(0.0f, 0.0f, carMovement);
+		distanceShift -= carMovement;
+		isMoving = true;
 	}
 	car->Shift(distanceShift);
+	car->SetIsMoving(isMoving);
+
+	float turnSpeed = 60.0f;
+	float turnAmount = turnSpeed * dt;
+	float turnShift = 0.0f;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		turnShift += turnAmount;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		turnShift -= turnAmount;
+	}
+	car->Turn(turnShift);
 
 	// P, L, T - Change draw modes for the car
 	GLenum drawMode = car->GetDrawMode();

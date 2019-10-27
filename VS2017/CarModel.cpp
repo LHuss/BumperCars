@@ -10,7 +10,7 @@ CarModel::CarModel(
 	vec3 centerPosition, vec3 centerShift,
 	vec3 sizeScale, vec3 shapeScale,
 	vec3 rotation, vec3 color,
-	glm::vec3 velocity
+	glm::vec3 velocity, float wheelAngle
 ) {
 	mCenterPosition = centerPosition;
 	mCenterShift = centerShift;
@@ -19,6 +19,7 @@ CarModel::CarModel(
 	mRotation = rotation;
 	mColor = color;
 	mVelocity = velocity;
+	mWheelAngle = wheelAngle;
 
 	vec3 darkSlateGray = ComputeColorFromRGB(47, 79, 79);
 	vec3 silver = ComputeColorFromRGB(192, 192, 192);
@@ -65,7 +66,7 @@ CarModel::CarModel(
 	trunk->SetTexture(TextureType::TEXTURE_WOOD);
 
 
-	float xPos[] = { -0.6f, 0.6f };
+	float xPos[] = { 0.6f, -0.6f };
 	float zPos[] = { -0.5f, 0.5f };
 	int pos = 0;
 	for (int i = 0; i < 2; i++) {
@@ -80,6 +81,13 @@ CarModel::CarModel(
 			cModels.push_back(wheels[pos]);
 
 			wheels[pos]->SetTexture(TextureType::TEXTURE_TIRE);
+
+			if (i == 0) {
+				frontWheels[j] = wheels[pos];
+			}
+			else {
+				backWheels[j] = wheels[pos];
+			}
 
 			pos++;
 		}
@@ -97,9 +105,9 @@ CarModel::~CarModel() {
 	delete(trunk);
 	trunk = NULL;
 
-	for (int i = 0; i < 4; i++) {
-		delete(wheels[i]);
-		wheels[i] = NULL;
+	for (auto it : wheels) {
+		delete(it);
+		it = NULL;
 	}
 
 	cModels.clear();
@@ -112,11 +120,29 @@ void CarModel::Reset() {
 	mShapeScale = glm::vec3(1.0f, 1.0f, 1.0f);
 	mRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	mColor = glm::vec3(0.5f, 0.5f, 0.5f);
+	mWheelAngle = 0.0f;
 }
 
 void CarModel::Update(float dt) {
 	Model::Update(dt);
 
+	if (mIsMoving) {
+		float carTurnSpeed = 50.0f;
+		float carTurnAmount = carTurnSpeed * dt;
+		float direction = mWheelAngle == 0 ? 0 : mWheelAngle / abs(mWheelAngle);
+
+		float maxCarCanTurn = min(abs(mWheelAngle), carTurnAmount) * direction;
+		vec3 maxRot = vec3(0.0f, 1.0f, 0.0f) * maxCarCanTurn;
+
+		float newWheelAngle = mWheelAngle - maxCarCanTurn;
+		mWheelAngle = newWheelAngle;
+
+		vec3 newCarRot = mRotation + maxRot;
+		mRotation = newCarRot;
+	}
+
+
+	vec3 wheelRotation = vec3(0.0f, 1.0f, 0.0f) * mWheelAngle;
 	mCenterPosition += mVelocity * dt;
 	for(std::vector<Model*>::iterator it = cModels.begin(); it < cModels.end(); ++it)
 	{
@@ -127,6 +153,10 @@ void CarModel::Update(float dt) {
 		(*it)->SetSizeScale(mSizeScale);
 		(*it)->SetDrawMode(mDrawMode);
 	}
+
+	for (auto it : frontWheels) {
+		it->SetPointRotation(wheelRotation);
+	}
 }
 
 void CarModel::Draw() {
@@ -136,12 +166,21 @@ void CarModel::Draw() {
 	}
 }
 
-void CarModel::Shift(vec3 distance) {
+void CarModel::Shift(float direction) {
+	vec3 distance = vec3(1.0f, 0.0f, 0.0f) * direction;
 	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 1)
 		* rotate(mat4(1.0f), radians(mRotation.x), vec3(1.0f, 0.0f, 0.0f))
 		* rotate(mat4(1.0f), radians(mRotation.y), vec3(0.0f, 1.0f, 0.0f))
 		* rotate(mat4(1.0f), radians(mRotation.z), vec3(0.0f, 0.0f, 1.0f));
 	mCenterPosition += vec3(distanceShift.x, distanceShift.y, -distanceShift.z);
+}
+
+void CarModel::Turn(float direction) {
+	mWheelAngle = min(max((mWheelAngle + direction), -60.0f), 60.0f);
+}
+
+void CarModel::SetIsMoving(bool isMoving) {
+	mIsMoving = isMoving;
 }
 
 void CarModel::SetVelocity(vec3 velocity) {

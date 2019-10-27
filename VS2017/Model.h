@@ -22,6 +22,7 @@ public:
 	void SetShapeScale(glm::vec3 shape);
 	void SetSizeScale(glm::vec3 size);
 	void SetRotation(glm::vec3 rotation);
+	void SetPointRotation(glm::vec3 rotation);
 	void SetColor(glm::vec3 color);
 	void SetColorFromRGB(int r, int g, int b);
 	void SetDrawMode(GLenum drawMode);
@@ -35,6 +36,7 @@ public:
 	glm::vec3 GetSizeScale() const { return mSizeScale; }
 	glm::vec3 GetShapeScale() const { return mShapeScale; }
 	glm::vec3 GetRotation() const { return mRotation; }
+	glm::vec3 GetPointRotation() const { return mPointRotation; }
 	glm::vec3 GetColor() const { return mColor; }
 	GLenum GetDrawMode() const { return mDrawMode; }
 	TextureType GetTexture() const { return mTexture; }
@@ -42,11 +44,15 @@ public:
 	glm::vec3 ComputeColorFromRGB(int r, int g, int b);
 
 protected:
+	glm::vec3 BindRotation(glm::vec3 rotation);
+	glm::mat4 ComputeRotationMatrix(glm::vec3 rotation) const;
+
 	glm::vec3 mCenterPosition;
 	glm::vec3 mCenterShift;
 	glm::vec3 mSizeScale;
 	glm::vec3 mShapeScale;
 	glm::vec3 mRotation;
+	glm::vec3 mPointRotation;
 	glm::vec3 mColor;
 
 	// Purely for projectile shits & giggles
