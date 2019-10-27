@@ -8,7 +8,8 @@ using namespace glm;
 
 AxisModel::AxisModel(
 ) {
-	SetDrawMode(GL_LINES);
+	mCenterPosition = vec3(0.0f, -0.2f, 0.0f);
+	mDrawMode = GL_LINES;
 	vec3 red = ComputeColorFromRGB(255, 0, 0);
 	vec3 green = ComputeColorFromRGB(0, 255, 0);
 	vec3 blue = ComputeColorFromRGB(0, 0, 255);

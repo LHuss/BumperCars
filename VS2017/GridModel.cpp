@@ -8,7 +8,7 @@ using namespace glm;
 
 GridModel::GridModel(
 ) {
-	SetCenterPosition(vec3(0.0f, -0.2f, 0.0f));
+	mCenterPosition = vec3(0.0f, -0.4f, 0.0f);
 	// light blue
 	vec3 lightBlue = ComputeColorFromRGB(68, 85, 90);
 	

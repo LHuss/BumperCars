@@ -120,6 +120,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CarModel.cpp" />
     <ClCompile Include="CubeModel.cpp" />
+    <ClCompile Include="CylinderModel.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="GridModel.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CarModel.h" />
     <ClInclude Include="CubeModel.h" />
+    <ClInclude Include="CylinderModel.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GridModel.h" />

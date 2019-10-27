@@ -2,6 +2,7 @@
 
 #include "Model.h"
 #include "CubeModel.h"
+#include "CylinderModel.h"
 
 class CarModel : public Model {
 public:
@@ -16,6 +17,8 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw();
 
+	void Shift(glm::vec3 distance);
+
 	void SetVelocity(glm::vec3 velocity);
 
 	void Reset();
@@ -27,7 +30,7 @@ private:
 	CubeModel *roof;
 	CubeModel *bonnet;
 	CubeModel *trunk;
-	CubeModel *wheels[4];
+	CylinderModel *wheels[4];
 
 	std::vector<Model*> cModels;
 

@@ -2,6 +2,8 @@
 #include "CubeModel.h"
 #include "Renderer.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 using namespace glm;
 
 CarModel::CarModel(
@@ -69,8 +71,8 @@ CarModel::CarModel(
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
 			vec3 wheelShift = vec3(xPos[i], -0.25f, zPos[j]);
-			vec3 wheelShape = vec3(0.5f, 0.5f, 0.5f) * shapeScale;
-			wheels[pos] = new CubeModel(
+			vec3 wheelShape = vec3(0.5f, 0.5f, 0.25f) * shapeScale;
+			wheels[pos] = new CylinderModel(
 				centerPosition, wheelShift,
 				sizeScale, wheelShape,
 				rotation, gold
@@ -134,6 +136,14 @@ void CarModel::Draw() {
 	}
 }
 
-void CarModel::SetVelocity(glm::vec3 velocity) {
+void CarModel::Shift(vec3 distance) {
+	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 1)
+		* rotate(mat4(1.0f), radians(mRotation.x), vec3(1.0f, 0.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(mRotation.y), vec3(0.0f, 1.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(mRotation.z), vec3(0.0f, 0.0f, 1.0f));
+	mCenterPosition += vec3(distanceShift.x, distanceShift.y, -distanceShift.z);
+}
+
+void CarModel::SetVelocity(vec3 velocity) {
 	mVelocity = velocity;
 }

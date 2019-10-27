@@ -13,6 +13,7 @@
 #include "FirstPersonCamera.h"
 #include "CubeModel.h"
 #include "CarModel.h"
+#include "CylinderModel.h"
 #include "GridModel.h"
 #include "AxisModel.h"
 #include "EventManager.h"
@@ -87,20 +88,20 @@ void World::Update(float dt)
 	// W, A, S, D - Directional Movement
 	float carSpeed = 5.0f;
 	float carMovement = carSpeed * dt;
-	vec3 carPosition = car->GetCenterPosition();
+	vec3 distanceShift = vec3(0.0f, 0.0f, 0.0f);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		carPosition += vec3(carMovement, 0.0f, 0.0f);
+		distanceShift += vec3(carMovement, 0.0f, 0.0f);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		carPosition += vec3(-carMovement, 0.0f, 0.0f);
+		distanceShift -= vec3(carMovement, 0.0f, 0.0f);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		carPosition += vec3(0.0f, 0.0f, -carMovement);
+		distanceShift += vec3(0.0f, 0.0f, carMovement);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		carPosition += vec3(0.0f, 0.0f, carMovement);
+		distanceShift -= vec3(0.0f, 0.0f, carMovement);
 	}
-	car->SetCenterPosition(carPosition);
+	car->Shift(distanceShift);
 
 	// P, L, T - Change draw modes for the car
 	GLenum drawMode = car->GetDrawMode();
@@ -136,7 +137,7 @@ void World::Update(float dt)
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_SPACE)) {
 		float randX = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
 		float randZ = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
-		carPosition = vec3(randX, 0.25f, randZ);
+		vec3 carPosition = vec3(randX, 0.25f, randZ);
 		car->SetCenterPosition(carPosition);
 	}
 
@@ -245,16 +246,20 @@ void World::InitializeModels() {
 	car = new CarModel(vec3(0.0f, 0.25f, 0.0f));
 
 	// Add a cube, why not.
-	CubeModel* cubeButNotInCenter = new CubeModel(vec3(10.0f, 0.5f, 1.0f));
+	/*CubeModel* cubeButNotInCenter = new CubeModel(vec3(10.0f, 0.5f, 1.0f));
 	CarModel* cubeButNotInCenter2 = new CarModel(vec3(10.0f, 0.5f, 6.0f));
 	mobileModels.push_back(cubeButNotInCenter);
-	mobileModels.push_back(cubeButNotInCenter2);
+	mobileModels.push_back(cubeButNotInCenter2);*/
+
+	CylinderModel* cylinder = new CylinderModel(vec3(0.0f, 0.5f, 20.0f));
+	mobileModels.push_back(cylinder);
 
 	GridModel* grid = new GridModel();
 	staticModels.push_back(grid);
 
 	AxisModel* axis = new AxisModel();
 	staticModels.push_back(axis);
+
 }
 
 mat4 World::GetInstancedViewProjectionMatrix() {
