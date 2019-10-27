@@ -134,7 +134,12 @@ void World::Update(float dt)
 	// Default (if any other shader is in use) - Turn on Textured shader
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_X)) {
 		ShaderType shaderToggle = ShaderType::SHADER_TEXTURED;
-		if (ShaderType(Renderer::GetCurrentShader()) == shaderToggle) {
+		ShaderType nextShaderToggle = ShaderType::SHADER_TEXTURED_UNCOLORED;
+		ShaderType currentShader = ShaderType(Renderer::GetCurrentShader());
+		if (currentShader == shaderToggle) {
+			shaderToggle = nextShaderToggle;
+		}
+		else if (currentShader == nextShaderToggle) {
 			shaderToggle = ShaderType::SHADER_SOLID_COLOR;
 		}
 

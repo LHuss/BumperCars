@@ -153,7 +153,7 @@ vec3 CylinderModel::GeneratePositionOnCircle(float radius, float angle, vec3 cen
 
 void CylinderModel::GenerateWall() {
 	int numPos = mPosCircle.size();
-	float chunkOfTexture = 1.0f / (numPos / 3 / 4); // repeat texture for every quarter of the wheel
+	float chunkOfTexture = 1.0f / (numPos / 3); // repeat texture for every quarter of the wheel
 	float texturePosition = 0.0f;
 	for (int i = 0; i < numPos; i = i + 3) {
 		float nextTexturePosition = texturePosition + chunkOfTexture;

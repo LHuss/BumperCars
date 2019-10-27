@@ -83,6 +83,10 @@ void Renderer::Initialize()
 		LoadShaders(shaderPathPrefix + "Textured.vertexshader",
 			shaderPathPrefix + "Textured.fragmentshader")
 	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Textured_Uncolored.vertexshader",
+			shaderPathPrefix + "Textured_Uncolored.fragmentshader")
+	);
 
 	sCurrentShader = 0;
 
@@ -94,27 +98,27 @@ void Renderer::Initialize()
 #endif
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "brick.jpg")[0])
+		LoadTexture(texturePathPrefix + "brick.jpg")
 	);
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "cement.jpg")[0])
+		LoadTexture(texturePathPrefix + "cement.jpg")
 	);
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "grass.bmp")[0])
+		LoadTexture(texturePathPrefix + "grass.bmp")
 	);
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "steel.jpg")[0])
+		LoadTexture(texturePathPrefix + "steel.jpg")
 	);
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "tire.jpg")[0])
+		LoadTexture(texturePathPrefix + "tire.jpg")
 	);
 
 	sTextureID.push_back(
-		LoadTexture(&(texturePathPrefix + "wood.png")[0])
+		LoadTexture(texturePathPrefix + "wood.png")
 	);
 
 }
@@ -264,7 +268,8 @@ GLuint Renderer::LoadShaders(std::string vertex_shader_path, std::string fragmen
 	return ProgramID;
 }
 
-GLuint Renderer::LoadTexture(char* texture_path) {
+GLuint Renderer::LoadTexture(string texture_path_s) {
+	char* texture_path = &texture_path_s[0];
 	// Load image using the Free Image library
 	FREE_IMAGE_FORMAT format = FreeImage_GetFileType(texture_path, 0);
 	FIBITMAP* image = FreeImage_Load(format, texture_path);
@@ -296,7 +301,7 @@ GLuint Renderer::LoadTexture(char* texture_path) {
 }
 
 bool Renderer::ShaderNeedsTexture() {
-	ShaderType shadersThatNeedTexture[1] = { SHADER_TEXTURED };
+	ShaderType shadersThatNeedTexture[2] = { SHADER_TEXTURED, SHADER_TEXTURED_UNCOLORED };
 	ShaderType *found = std::find(std::begin(shadersThatNeedTexture), std::end(shadersThatNeedTexture), ShaderType(GetCurrentShader()));
 	return found != std::end(shadersThatNeedTexture);
 }

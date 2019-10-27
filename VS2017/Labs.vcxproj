@@ -104,6 +104,8 @@
     <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
     <None Include="..\Assets\Shaders\Textured.fragmentshader" />
     <None Include="..\Assets\Shaders\Textured.vertexshader" />
+    <None Include="..\Assets\Shaders\Textured_Uncolored.fragmentshader" />
+    <None Include="..\Assets\Shaders\Textured_Uncolored.vertexshader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Lab04\Assets\Textures\brick.jpg" />

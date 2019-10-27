@@ -17,6 +17,7 @@ enum ShaderType
 {
 	SHADER_SOLID_COLOR,
 	SHADER_TEXTURED,
+	SHADER_TEXTURED_UNCOLORED,
 	NUM_SHADERS
 };
 
@@ -43,7 +44,7 @@ public:
 
 	static GLuint LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path);
 
-	static GLuint LoadTexture(char* texture_path);
+	static GLuint LoadTexture(std::string texture_path_s);
 
 	static unsigned int GetShaderProgramID() { return sShaderProgramID[sCurrentShader]; }
 	static unsigned int GetCurrentShader() { return sCurrentShader; }
