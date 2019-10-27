@@ -10,6 +10,7 @@
 #include "Model.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
+#include <math.h>
 
 using namespace std;
 using namespace glm;
@@ -38,9 +39,9 @@ glm::mat4 Model::GetWorldMatrix() const {
 	mat4 sizeS = scale(mat4(1.0f), mSizeScale);
 
 	mat4 rot = mat4(1.0f)
-		* rotate(mat4(1.0f), radians(mAngleStepSize * mRotation.x), vec3(1.0f, 0.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mAngleStepSize * mRotation.y), vec3(0.0f, 1.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mAngleStepSize * mRotation.z), vec3(0.0f, 0.0f, 1.0f));
+		* rotate(mat4(1.0f), radians(mRotation.x), vec3(1.0f, 0.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(mRotation.y), vec3(0.0f, 1.0f, 0.0f))
+		* rotate(mat4(1.0f), radians(mRotation.z), vec3(0.0f, 0.0f, 1.0f));
 
 	mat4 shift = translate(mat4(1.0f), mCenterShift);
 
@@ -68,7 +69,7 @@ void Model::SetSizeScale(glm::vec3 size) {
 }
 
 void Model::SetRotation(glm::vec3 rotation) {
-	mRotation = rotation;
+	mRotation = vec3(fmod(rotation.x, 360), fmod(rotation.y, 360), fmod(rotation.z, 180));
 }
 
 void Model::SetColor(glm::vec3 color) {

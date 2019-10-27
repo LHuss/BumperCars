@@ -11,13 +11,14 @@
 #include "Renderer.h"
 
 #include "FirstPersonCamera.h"
-
 #include "CubeModel.h"
 #include "CarModel.h"
 #include "GridModel.h"
 #include "AxisModel.h"
-#include <GLFW/glfw3.h>
 #include "EventManager.h"
+
+#include <GLFW/glfw3.h>
+#include <math.h>
 
 
 using namespace std;
@@ -149,40 +150,42 @@ void World::Update(float dt)
 
 	// Q, E - Rotate car along x-axis
 	vec3 carRotation = car->GetRotation();
+	const float angleStepSize = 5.0f;
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-		carRotation += vec3(0.0f, 1.0f, 0.0f);
+		carRotation += vec3(0.0f, 1.0f, 0.0f) * angleStepSize;
 	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-		carRotation -= vec3(0.0f, 1.0f, 0.0f);
+		carRotation -= vec3(0.0f, 1.0f, 0.0f) * angleStepSize;
 	}
 
 	// R, G - Rotate car along y-axis
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-		carRotation += vec3(0.0f, 0.0f, 1.0f);
+		carRotation += vec3(0.0f, 0.0f, 1.0f) * angleStepSize;
 	}
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-		carRotation -= vec3(0.0f, 0.0f, 1.0f);
+		carRotation -= vec3(0.0f, 0.0f, 1.0f) * angleStepSize;
 	}
 
 	// F, H - Rotate car along z-axis
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-		carRotation += vec3(1.0f, 0.0f, 0.0f);
+		carRotation += vec3(1.0f, 0.0f, 0.0f) * angleStepSize;
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		carRotation -= vec3(1.0f, 0.0f, 0.0f);
+		carRotation -= vec3(1.0f, 0.0f, 0.0f) * angleStepSize;
 	}
 	car->SetRotation(carRotation);
 	
 	car->Update(dt);
 
 	// Projectile Cars
-	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && mCurrentCamera == 0) {
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && mCurrentCamera == CameraType::CAMERA_FIRST && EventManager::CanUseKey(GLFW_KEY_5)) {
 		const float projectileSpeed = 5.0f;
 
 		vec3 lookAt = ((FirstPersonCamera*) GetCurrentCamera())->GetLookAt();
 		vec3 sizeScale(0.1f, 0.1f, 0.1f);
 		vec3 pos = ((FirstPersonCamera*)GetCurrentCamera())->GetPosition();
 		CarModel* projCar = new CarModel();
+		projCar->SetRotation(vec3(0.0f, ((FirstPersonCamera*)GetCurrentCamera())->GetHorizontalAngle(), ((FirstPersonCamera*)GetCurrentCamera())->GetVerticalAngle()));
 		projCar->SetCenterPosition(pos);
 		projCar->SetVelocity(lookAt * projectileSpeed);
 		projCar->SetSizeScale(sizeScale);
@@ -210,7 +213,7 @@ void World::Draw()
 	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 VP = GetViewProjectionMatrix();
+	mat4 VP = GetInstancedViewProjectionMatrix();
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Draw models
@@ -243,7 +246,9 @@ void World::InitializeModels() {
 
 	// Add a cube, why not.
 	CubeModel* cubeButNotInCenter = new CubeModel(vec3(10.0f, 0.5f, 1.0f));
+	CarModel* cubeButNotInCenter2 = new CarModel(vec3(10.0f, 0.5f, 6.0f));
 	mobileModels.push_back(cubeButNotInCenter);
+	mobileModels.push_back(cubeButNotInCenter2);
 
 	GridModel* grid = new GridModel();
 	staticModels.push_back(grid);
@@ -252,6 +257,6 @@ void World::InitializeModels() {
 	staticModels.push_back(axis);
 }
 
-mat4 World::GetViewProjectionMatrix() {
+mat4 World::GetInstancedViewProjectionMatrix() {
 	return instance->GetCurrentCamera()->GetViewProjectionMatrix();
 }

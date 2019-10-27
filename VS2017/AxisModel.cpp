@@ -74,7 +74,7 @@ void AxisModel::Draw()
 	glUseProgram(Renderer::GetShaderProgramID());
 
 	// Update ViewProjection of this shader program
-	mat4 VP = World::GetViewProjectionMatrix();
+	mat4 VP = World::GetInstancedViewProjectionMatrix();
 	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 

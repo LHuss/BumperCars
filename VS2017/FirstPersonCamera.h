@@ -23,6 +23,9 @@ public:
 	glm::vec3 GetLookAt() const { return mLookAt; }
 	glm::vec3 GetPosition() const { return mPosition; }
 
+	float GetHorizontalAngle() const { return mHorizontalAngle; }
+	float GetVerticalAngle() const { return mVerticalAngle; }
+
 private:
 	glm::vec3 mPosition;
 	float mHorizontalAngle; // horizontal angle

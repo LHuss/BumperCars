@@ -33,7 +33,7 @@ public:
 
 	const Camera* GetCurrentCamera() const;
 
-	static glm::mat4 GetViewProjectionMatrix();
+	static glm::mat4 GetInstancedViewProjectionMatrix();
 
 private:
 	static World* instance;

@@ -14,17 +14,19 @@ CubeModel::CubeModel(
 	mShapeScale = shapeScale;
 	mRotation = rotation;
 	mColor = color;
+
+
 	
 	Vertex vertexBuffer[] = {  // position,					normal,						color,  aUV  
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) }, // left
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) }, // far
 								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
 								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
 
@@ -32,37 +34,37 @@ CubeModel::CubeModel(
 								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
 								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // bottom
 								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
 								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(.0f, 1.0f) },
 								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) }, // near
+								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // right
 								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
 
 								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(0.5f,0.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }, //top
+								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) }
+								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }
 	};
 
 	// Create a vertex array

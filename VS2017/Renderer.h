@@ -56,6 +56,8 @@ public:
 
 	static bool ShaderNeedsTexture();
 
+	static void SwapAndUseShader(ShaderType type);
+
 private:
 	static GLFWwindow* spWindow;
 

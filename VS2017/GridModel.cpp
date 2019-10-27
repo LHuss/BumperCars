@@ -71,16 +71,10 @@ void GridModel::Update(float dt) {
 
 void GridModel::Draw()
 {
-	// Swap Shaders
-	unsigned int currentShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(ShaderType::SHADER_SOLID_COLOR);
-
-	glUseProgram(Renderer::GetShaderProgramID());
-
-	// Update ViewProjection of this shader program
-	mat4 VP = World::GetViewProjectionMatrix();
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+	// Save current shader to swap back
+	ShaderType currentShader = ShaderType(Renderer::GetCurrentShader());
+	// Swap shaders
+	Renderer::SwapAndUseShader(ShaderType::SHADER_SOLID_COLOR);
 
 
 	// Draw
@@ -104,6 +98,5 @@ void GridModel::Draw()
 	}
 
 	// Swap Back
-	Renderer::SetShader(ShaderType(currentShader));
-	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::SwapAndUseShader(currentShader);
 }

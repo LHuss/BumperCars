@@ -7,9 +7,6 @@
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
 
-#include "Renderer.h"
-
-
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -22,6 +19,7 @@ using namespace std;
 
 #include "Renderer.h"
 #include "EventManager.h"
+#include "World.h"
 
 #include <GLFW/glfw3.h>
 #include <FreeImageIO.h>
@@ -155,6 +153,20 @@ void Renderer::SetShader(ShaderType type)
 	if (type < (int)sShaderProgramID.size())
 	{
 		sCurrentShader = type;
+	}
+}
+
+void Renderer::SwapAndUseShader(ShaderType type) {
+	ShaderType currentShader = ShaderType(GetCurrentShader());
+	if (currentShader != type) {
+		SetShader(type);
+
+		glUseProgram(GetShaderProgramID());
+
+		// Update ViewProjection of new shader program
+		glm::mat4 VP = World::GetInstancedViewProjectionMatrix();
+		GLuint VPMatrixLocation = glGetUniformLocation(GetShaderProgramID(), "ViewProjectionTransform");
+		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 	}
 }
 

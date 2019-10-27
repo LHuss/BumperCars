@@ -54,7 +54,5 @@ protected:
 	
 	GLenum mDrawMode;
 
-	float mAngleStepSize = 5.0f;
-
 	TextureType mTexture;
 };

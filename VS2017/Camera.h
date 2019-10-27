@@ -11,6 +11,10 @@
 
 #include <glm/glm.hpp>
 
+enum CameraType {
+	CAMERA_FIRST,
+};
+
 class Camera
 {
 public:
