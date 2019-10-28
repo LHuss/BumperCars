@@ -144,7 +144,7 @@ void CarModel::Update(float dt) {
 		float maxCarCanTurn = min(abs(mWheelAngle), carTurnAmount) * direction * mMovementDirection;
 		vec3 maxRot = vec3(0.0f, 1.0f, 0.0f) * maxCarCanTurn;
 
-		float newWheelAngle = mWheelAngle - maxCarCanTurn;
+		float newWheelAngle = mWheelAngle - (maxCarCanTurn * mMovementDirection);
 		mWheelAngle = newWheelAngle;
 
 		vec3 newCarRot = mRotation + maxRot;

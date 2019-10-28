@@ -47,12 +47,6 @@
     <None Include="..\Assets\Shaders\Lighting_Textured.vertexshader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.fragmentshader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.vertexshader">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Lab04\Assets\Textures\brick.jpg">
@@ -75,81 +69,75 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\a1_40000298.cpp">
+    <ClCompile Include="..\Source\CubeModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Lab04\lab04.cpp">
+    <ClCompile Include="..\Source\CylinderModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="..\Source\EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CubeModel.cpp">
+    <ClCompile Include="..\Source\FirstPersonCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="..\Source\GridModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EventManager.cpp">
+    <ClCompile Include="..\Source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="..\Source\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FirstPersonCamera.cpp">
+    <ClCompile Include="..\Source\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp">
+    <ClCompile Include="..\Source\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GridModel.cpp">
+    <ClCompile Include="..\Source\AxisModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="..\Source\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AxisModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CarModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CylinderModel.cpp">
+    <ClCompile Include="..\Source\CarModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="..\Source\CarModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CubeModel.h">
+    <ClInclude Include="..\Source\CubeModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="..\Source\CylinderModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="EventManager.h">
+    <ClInclude Include="..\Source\EventManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="FirstPersonCamera.h">
+    <ClInclude Include="..\Source\FirstPersonCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="..\Source\GridModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="World.h">
+    <ClInclude Include="..\Source\Model.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="GridModel.h">
+    <ClInclude Include="..\Source\Renderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="AxisModel.h">
+    <ClInclude Include="..\Source\World.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CarModel.h">
+    <ClInclude Include="..\Source\AxisModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CylinderModel.h">
+    <ClInclude Include="..\Source\Camera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

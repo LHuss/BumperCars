@@ -49,11 +49,11 @@ void FirstPersonCamera::Update(float dt)
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
 	if (mHorizontalAngle > 360)
 	{
-		mHorizontalAngle -= 360;
+		mHorizontalAngle -= 360.0f;
 	}
 	else if (mHorizontalAngle < -360)
 	{
-		mHorizontalAngle += 360;
+		mHorizontalAngle += 360.0f;
 	}
 
 	float theta = radians(mHorizontalAngle);

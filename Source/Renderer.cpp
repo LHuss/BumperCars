@@ -196,9 +196,12 @@ void Renderer::BindUniforms() {
 	glm::vec3 lightPos = light->GetCenterPosition();
 	glUniform3f(LightPosLocation, lightPos.x, lightPos.y, lightPos.z);
 
-	GLuint LightColLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.color");
-	glm::vec3 lightColor = light->GetColor();
-	glUniform3f(LightColLocation, lightColor.z, lightColor.y, lightColor.z);
+	GLuint LightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.ambient");
+	glUniform3f(LightAmbientLoc, 0.9f, 0.9f, 0.9f);
+	GLuint LightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.diffuse");
+	glUniform3f(LightDiffuseLoc, 0.8f, 0.8f, 0.8f);
+	GLuint LightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.specular");
+	glUniform3f(LightAmbientLoc, 1.0f, 1.0f, 1.0f);
 
 	GLuint ViewPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "viewPos");
 	glm::vec3 viewPos = World::GetInstance()->GetCurrentCamera()->GetPosition();

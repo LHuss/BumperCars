@@ -151,7 +151,7 @@ float EventManager::GetMinKeyWait() {
 }
 
 bool EventManager::CanUseKey(int key) {
-	float time = glfwGetTime();
+	float time = (float) glfwGetTime();
 	map<int, float>::iterator kv = sKeyMap.find(key);
 	if ((kv == sKeyMap.end()) || ((time - sMinKeyWait) > kv->second)) {
 		sKeyMap[key] = time;

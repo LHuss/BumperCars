@@ -104,8 +104,6 @@
     <None Include="..\Assets\Shaders\Lighting.vertexshader" />
     <None Include="..\Assets\Shaders\Lighting_Textured.fragmentshader" />
     <None Include="..\Assets\Shaders\Lighting_Textured.vertexshader" />
-    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.fragmentshader" />
-    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.vertexshader" />
     <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
     <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
     <None Include="..\Assets\Shaders\Textured.fragmentshader" />
@@ -122,33 +120,31 @@
     <Image Include="..\Assets\Textures\wood.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Lab04\lab04.cpp" />
-    <ClCompile Include="..\Source\a1_40000298.cpp" />
-    <ClCompile Include="AxisModel.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CarModel.cpp" />
-    <ClCompile Include="CubeModel.cpp" />
-    <ClCompile Include="CylinderModel.cpp" />
-    <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="FirstPersonCamera.cpp" />
-    <ClCompile Include="GridModel.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="World.cpp" />
+    <ClCompile Include="..\Source\AxisModel.cpp" />
+    <ClCompile Include="..\Source\Camera.cpp" />
+    <ClCompile Include="..\Source\CarModel.cpp" />
+    <ClCompile Include="..\Source\CubeModel.cpp" />
+    <ClCompile Include="..\Source\CylinderModel.cpp" />
+    <ClCompile Include="..\Source\EventManager.cpp" />
+    <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
+    <ClCompile Include="..\Source\GridModel.cpp" />
+    <ClCompile Include="..\Source\main.cpp" />
+    <ClCompile Include="..\Source\Model.cpp" />
+    <ClCompile Include="..\Source\Renderer.cpp" />
+    <ClCompile Include="..\Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AxisModel.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CarModel.h" />
-    <ClInclude Include="CubeModel.h" />
-    <ClInclude Include="CylinderModel.h" />
-    <ClInclude Include="EventManager.h" />
-    <ClInclude Include="FirstPersonCamera.h" />
-    <ClInclude Include="GridModel.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="World.h" />
+    <ClInclude Include="..\Source\AxisModel.h" />
+    <ClInclude Include="..\Source\Camera.h" />
+    <ClInclude Include="..\Source\CarModel.h" />
+    <ClInclude Include="..\Source\CubeModel.h" />
+    <ClInclude Include="..\Source\CylinderModel.h" />
+    <ClInclude Include="..\Source\EventManager.h" />
+    <ClInclude Include="..\Source\FirstPersonCamera.h" />
+    <ClInclude Include="..\Source\GridModel.h" />
+    <ClInclude Include="..\Source\Model.h" />
+    <ClInclude Include="..\Source\Renderer.h" />
+    <ClInclude Include="..\Source\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

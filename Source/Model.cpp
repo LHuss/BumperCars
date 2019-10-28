@@ -89,15 +89,15 @@ void Model::SetPointRotation(glm::vec3 rotation) {
 }
 
 vec3 Model::BindRotation(glm::vec3 rotation) {
-	float x = fmod(rotation.x, 360);
+	float x =  fmodf(rotation.x, 360);
 	if (x < 0) {
 		x += 360;
 	}
-	float y = fmod(rotation.y, 360);
+	float y = fmodf(rotation.y, 360);
 	if (y < 0) {
 		y += 360;
 	}
-	float z = fmod(rotation.z, 360);
+	float z = fmodf(rotation.z, 360);
 	if (z < 0) {
 		z += 360;
 	}
