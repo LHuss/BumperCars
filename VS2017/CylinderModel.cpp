@@ -1,6 +1,8 @@
 #include "CylinderModel.h"
 #include "Renderer.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 using namespace glm;
 
 CylinderModel::CylinderModel(
@@ -17,7 +19,14 @@ CylinderModel::CylinderModel(
 	mColor = color;
 	mTexture = texture;
 	mCircleTexture = circleTexture;
+}
 
+CylinderModel::~CylinderModel() {
+	glDeleteBuffers(1, &mVertexBuffer);
+	glDeleteVertexArrays(1, &mVertexArray);
+}
+
+void CylinderModel::GenerateModel() {
 	GenerateCylinder();
 
 	// Create a vertex array
@@ -27,7 +36,7 @@ CylinderModel::CylinderModel(
 	// Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
 	glGenBuffers(1, &mVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*mCylinderPoints.size(), &(mCylinderPoints)[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mCylinderPoints.size(), &(mCylinderPoints)[0], GL_STATIC_DRAW);
 
 
 
@@ -72,11 +81,6 @@ CylinderModel::CylinderModel(
 	glEnableVertexAttribArray(3);
 }
 
-CylinderModel::~CylinderModel() {
-	glDeleteBuffers(1, &mVertexBuffer);
-	glDeleteVertexArrays(1, &mVertexArray);
-}
-
 void CylinderModel::GenerateCylinder(){
 	GenerateCircles();
 	GenerateWall();
@@ -87,8 +91,8 @@ void CylinderModel::GenerateCircles() {
 	mPosCircle.clear();
 
 	vec3 circleCenters[2] = { vec3(0.0f, 0.5f, -0.5f), vec3(0.0f, 0.5f, 0.5f) };
-	vec3 negNormal(-1.0f, 0.0f, 0.0f);
-	vec3 posNormal(1.0f, 0.0f, 0.0f);
+	vec3 negNormal(0.0f, 0.0f, -1.0f);
+	vec3 posNormal(0.0f, 0.0f, 1.0f);
 	float radius = 0.5f;
 	int numSplines = 64; // want this to be divisible by 4
 	float angleStep = 360.0f / numSplines;
@@ -99,6 +103,12 @@ void CylinderModel::GenerateCircles() {
 
 		// I mean it's only 2 iterations so I really don't need this but whatever...
 		bool isNegCircle = circleCenter.z < 0;
+		if (isNegCircle) {
+			mNegCircleCenter = circleCenter;
+		}
+		else {
+			mPosCircleCenter = circleCenter;
+		}
 
 		for (int j = 0; j < numSplines; j++) {
 			angle = j * angleStep;
@@ -160,22 +170,22 @@ void CylinderModel::GenerateWall() {
 		int nextIndex = (i + 3) % numPos;
 		// triangle points
 		vec3 brP = mPosCircle[i].position;
-		vec3 brN = normalize(brP);
+		vec3 brN = normalize(brP - mPosCircleCenter);
 		vec2 brUV(1.0f, texturePosition);
 		Vertex bottomRight = { brP, brN, mColor, brUV };
 
 		vec3 trP = mPosCircle[nextIndex].position;
-		vec3 trN = normalize(trP);
+		vec3 trN = normalize(trP - mPosCircleCenter);
 		vec2 trUV(1.0f, nextTexturePosition);
 		Vertex topRight = { trP, trN, mColor, trUV };
 
 		vec3 blP = mNegCircle[i].position;
-		vec3 blN = normalize(blP);
+		vec3 blN = normalize(blP - mNegCircleCenter);
 		vec2 blUV(0.0f, texturePosition);
 		Vertex bottomLeft = { blP, blN, mColor, blUV };
 
 		vec3 tlP = mNegCircle[nextIndex].position;
-		vec3 tlN = normalize(tlP);
+		vec3 tlN = normalize(tlP - mNegCircleCenter);
 		vec2 tlUV(0.0f, nextTexturePosition);
 		Vertex topLeft = { tlP, tlN, mColor, tlUV };
 
@@ -205,6 +215,10 @@ void CylinderModel::Update(float dt) {
 
 void CylinderModel::Draw()
 {
+	if (mHidden) {
+		return;
+	}
+
 	int circlesIndex = 0;
 	int circlesCount = mNegCircle.size() + mPosCircle.size();
 	int wallIndex = circlesIndex + circlesCount;
@@ -218,8 +232,9 @@ void CylinderModel::Draw()
 	if (Renderer::ShaderNeedsTexture()) {
 		glBindTexture(GL_TEXTURE_2D, Renderer::GetTextureID(mCircleTexture));
 	}
+	Renderer::BindTextureUniforms(mCircleTexture);
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
+	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &(GetWorldMatrix())[0][0]);
 	glDrawArrays(mDrawMode, circlesIndex, circlesCount);
 
 
@@ -227,6 +242,7 @@ void CylinderModel::Draw()
 	if (Renderer::ShaderNeedsTexture()) {
 		glBindTexture(GL_TEXTURE_2D, Renderer::GetTextureID(mTexture));
 	}
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
+	Renderer::BindTextureUniforms(mTexture);
+	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &(GetWorldMatrix())[0][0]);
 	glDrawArrays(mDrawMode, wallIndex, wallCount);
 }

@@ -12,6 +12,7 @@ public:
 	Model();
 	virtual ~Model();
 
+	virtual void GenerateModel();
 	virtual void Update(float dt) = 0;
 	virtual void Draw() = 0;
 	
@@ -27,9 +28,13 @@ public:
 	void SetColorFromRGB(int r, int g, int b);
 	void SetDrawMode(GLenum drawMode);
 	void SetTexture(TextureType texture);
+	void SetSpecificShader(ShaderType shader);
 
 	void UpScale();
 	void DownScale();
+
+	void Show();
+	void Hide();
 
 	glm::vec3 GetCenterPosition() const { return mCenterPosition; }
 	glm::vec3 GetCenterShift() const { return mCenterShift; }
@@ -40,6 +45,7 @@ public:
 	glm::vec3 GetColor() const { return mColor; }
 	GLenum GetDrawMode() const { return mDrawMode; }
 	TextureType GetTexture() const { return mTexture; }
+	ShaderType GetShader() const { return mSpecificShader;  }
 
 	glm::vec3 ComputeColorFromRGB(int r, int g, int b);
 
@@ -55,10 +61,14 @@ protected:
 	glm::vec3 mPointRotation;
 	glm::vec3 mColor;
 
+	ShaderType mSpecificShader;
+
 	// Purely for projectile shits & giggles
 	glm::vec3 mRotationVelocity;
 	
 	GLenum mDrawMode;
 
 	TextureType mTexture;
+
+	bool mHidden;
 };

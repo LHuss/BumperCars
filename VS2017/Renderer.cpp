@@ -87,6 +87,14 @@ void Renderer::Initialize()
 		LoadShaders(shaderPathPrefix + "Textured_Uncolored.vertexshader",
 			shaderPathPrefix + "Textured_Uncolored.fragmentshader")
 	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Lighting.vertexshader",
+			shaderPathPrefix + "Lighting.fragmentshader")
+	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Lighting_Textured.vertexshader",
+			shaderPathPrefix + "Lighting_Textured.fragmentshader")
+	);
 
 	sCurrentShader = 0;
 
@@ -162,20 +170,99 @@ void Renderer::SetShader(ShaderType type)
 
 void Renderer::SwapAndUseShader(ShaderType type) {
 	ShaderType currentShader = ShaderType(GetCurrentShader());
-	if (currentShader != type) {
+	if (currentShader != type && type != ShaderType::SHADER_NULL) {
 		SetShader(type);
 
 		glUseProgram(GetShaderProgramID());
 
-		// Update ViewProjection of new shader program
-		glm::mat4 VP = World::GetInstancedViewProjectionMatrix();
-		GLuint VPMatrixLocation = glGetUniformLocation(GetShaderProgramID(), "ViewProjectionTransform");
-		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+		BindUniforms();
 	}
 }
 
+void Renderer::BindUniforms() {
+	// Set shader to use
+	glUseProgram(Renderer::GetShaderProgramID());
+
+	// This looks for the MVP Uniform variable in the Vertex Program
+	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+
+	// Send the view projection constants to the shader
+	glm::mat4 VP = World::GetInstancedViewProjectionMatrix();
+	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+
+	// Do the same shit, but for light data
+	CubeModel* light = World::GetInstance()->GetLight();
+	GLuint LightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.position");
+	glm::vec3 lightPos = light->GetCenterPosition();
+	glUniform3f(LightPosLocation, lightPos.x, lightPos.y, lightPos.z);
+
+	GLuint LightColLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.color");
+	glm::vec3 lightColor = light->GetColor();
+	glUniform3f(LightColLocation, lightColor.z, lightColor.y, lightColor.z);
+
+	GLuint ViewPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "viewPos");
+	glm::vec3 viewPos = World::GetInstance()->GetCurrentCamera()->GetPosition();
+	glUniform3f(ViewPosLocation, viewPos.x, viewPos.y, viewPos.z);
+}
+
+void Renderer::BindTextureUniforms(TextureType texture) {
+	GLuint MatAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "material.ambient");
+	glUniform1f(MatAmbientLoc, GetAmbientStrength(texture));
+	GLuint MatSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "material.specular");
+	glUniform1f(MatSpecularLoc, GetSpecularStrength(texture));
+	GLuint MatShininess = glGetUniformLocation(Renderer::GetShaderProgramID(), "material.shininess");
+	glUniform1f(MatShininess, GetShininess(texture));
+}
+
 unsigned int Renderer::GetTextureID(TextureType texture) {
-	return sTextureID[texture];
+	if (texture == TextureType::TEXTURE_NULL) {
+		return 0;
+	}
+	else {
+		return sTextureID[texture];
+	}
+}
+
+float Renderer::GetShininess(TextureType texture) {
+	map<unsigned int, float> shininessMap;
+
+	shininessMap[TextureType::TEXTURE_BRICK] = 10.0f;
+	shininessMap[TextureType::TEXTURE_CEMENT] = 20.0f;
+	shininessMap[TextureType::TEXTURE_GRASS] = 15.0f;
+	shininessMap[TextureType::TEXTURE_STEEL] = 40.0f;
+	shininessMap[TextureType::TEXTURE_TIRE] = 10.0f;
+	shininessMap[TextureType::TEXTURE_WOOD] = 10.0f;
+	shininessMap[TextureType::TEXTURE_NULL] = 32.0f;
+
+	return shininessMap[texture];
+}
+
+float Renderer::GetSpecularStrength(TextureType texture) {
+	map<unsigned int, float> specularStrengthMap;
+
+	specularStrengthMap[TextureType::TEXTURE_BRICK] = 0.1f;
+	specularStrengthMap[TextureType::TEXTURE_CEMENT] = 0.1f;
+	specularStrengthMap[TextureType::TEXTURE_GRASS] = 0.3f;
+	specularStrengthMap[TextureType::TEXTURE_STEEL] = 0.8f;
+	specularStrengthMap[TextureType::TEXTURE_TIRE] = 0.1f;
+	specularStrengthMap[TextureType::TEXTURE_WOOD] = 0.1f;
+	specularStrengthMap[TextureType::TEXTURE_NULL] = 0.5f;
+
+	return specularStrengthMap[texture];
+}
+
+float Renderer::GetAmbientStrength(TextureType texture) {
+	map<unsigned int, float> ambientStrength;
+
+	ambientStrength[TextureType::TEXTURE_BRICK] = 0.1f;
+	ambientStrength[TextureType::TEXTURE_CEMENT] = 0.1f;
+	ambientStrength[TextureType::TEXTURE_GRASS] = 0.1f;
+	ambientStrength[TextureType::TEXTURE_STEEL] = 0.6f;
+	ambientStrength[TextureType::TEXTURE_TIRE] = 0.1f;
+	ambientStrength[TextureType::TEXTURE_WOOD] = 0.1f;
+	ambientStrength[TextureType::TEXTURE_NULL] = 0.5f;
+
+	return ambientStrength[texture];
 }
 
 //
@@ -301,7 +388,7 @@ GLuint Renderer::LoadTexture(string texture_path_s) {
 }
 
 bool Renderer::ShaderNeedsTexture() {
-	ShaderType shadersThatNeedTexture[2] = { SHADER_TEXTURED, SHADER_TEXTURED_UNCOLORED };
+	ShaderType shadersThatNeedTexture[3] = { ShaderType::SHADER_TEXTURED, ShaderType::SHADER_TEXTURED_UNCOLORED, ShaderType::SHADER_LIGHTING_TEXTURED };
 	ShaderType *found = std::find(std::begin(shadersThatNeedTexture), std::end(shadersThatNeedTexture), ShaderType(GetCurrentShader()));
 	return found != std::end(shadersThatNeedTexture);
 }
@@ -361,11 +448,9 @@ bool Renderer::PrintError()
 	return retVal;
 }
 
-
 void Renderer::CheckForErrors()
 {
 	while (PrintError() == false)
 	{
 	}
 }
-

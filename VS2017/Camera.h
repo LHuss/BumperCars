@@ -23,11 +23,14 @@ public:
 
 	virtual void Update(float dt) = 0;
 
+	glm::vec3 GetPosition() const { return mPosition; }
+
 	virtual glm::mat4 GetViewMatrix() const = 0;
 	virtual glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetViewProjectionMatrix() const;
 
 protected:
+	glm::vec3 mPosition;
 	float mZoomFactor;
 
 private:

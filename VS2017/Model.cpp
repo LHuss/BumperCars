@@ -15,13 +15,14 @@
 using namespace std;
 using namespace glm;
 
-Model::Model():
-	mCenterPosition(0.0f, 0.0f, 0.0f), mCenterShift(1.0f, 1.0f, 1.0f), 
+Model::Model() :
+	mCenterPosition(0.0f, 0.0f, 0.0f), mCenterShift(1.0f, 1.0f, 1.0f),
 	mSizeScale(1.0f, 1.0f, 1.0f), mShapeScale(1.0f, 1.0f, 1.0f),
 	mRotation(0.0f, 0.0f, 0.0f), mPointRotation(0.0f, 0.0f, 0.0f),
 	mColor(0.5f, 0.5f, 0.5f),
 	mDrawMode(GL_TRIANGLES), mRotationVelocity(0.0f, 0.0f, 0.0f),
-	mTexture(TEXTURE_BRICK){
+	mTexture(TextureType::TEXTURE_NULL), mSpecificShader(ShaderType::SHADER_NULL),
+	mHidden(false) {
 }
 
 Model::~Model() {
@@ -33,10 +34,14 @@ void Model::Update(float dt) {
 void Model::Draw() {
 }
 
+void Model::GenerateModel() {
+}
+
 glm::mat4 Model::GetWorldMatrix() const {
 	mat4 worldMatrix(1.0f);
 
 	mat4 centerT = translate(mat4(1.0f), mCenterPosition);
+
 	mat4 sizeS = scale(mat4(1.0f), mSizeScale);
 
 	mat4 rot = ComputeRotationMatrix(mRotation);
@@ -97,7 +102,6 @@ vec3 Model::BindRotation(glm::vec3 rotation) {
 		z += 360;
 	}
 	return vec3(x, y, z);
-
 }
 
 void Model::SetColor(glm::vec3 color) {
@@ -116,12 +120,24 @@ void Model::SetTexture(TextureType texture) {
 	mTexture = texture;
 }
 
+void Model::SetSpecificShader(ShaderType shader) {
+	mSpecificShader = shader;
+}
+
 void Model::UpScale() {
 	mSizeScale *= 1.05;
 }
 
 void Model::DownScale() {
 	mSizeScale /= 1.05;
+}
+
+void Model::Show() {
+	mHidden = false;
+}
+
+void Model::Hide() {
+	mHidden = true;
 }
 
 glm::vec3 Model::ComputeColorFromRGB(int r, int g, int b) {

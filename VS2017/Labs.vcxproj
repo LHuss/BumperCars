@@ -100,6 +100,12 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\Assets\Shaders\Lighting.fragmentshader" />
+    <None Include="..\Assets\Shaders\Lighting.vertexshader" />
+    <None Include="..\Assets\Shaders\Lighting_Textured.fragmentshader" />
+    <None Include="..\Assets\Shaders\Lighting_Textured.vertexshader" />
+    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.fragmentshader" />
+    <None Include="..\Assets\Shaders\Lighting_Textured_TwoPass.vertexshader" />
     <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
     <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
     <None Include="..\Assets\Shaders\Textured.fragmentshader" />

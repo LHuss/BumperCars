@@ -15,8 +15,14 @@
 #include <list>
 
 #include "CarModel.h"
+#include "GridModel.h"
 #include "Camera.h"
 #include "Model.h"
+
+struct LightSource {
+	glm::vec3 position;
+	glm::vec3 color;
+};
 
 class World
 {
@@ -25,6 +31,8 @@ public:
 	~World();
 
 	static World* GetInstance();
+
+	CubeModel* GetLight() const { return light; }
 
 	void Update(float dt);
 	void Draw();
@@ -39,6 +47,9 @@ private:
 	static World* instance;
 
 	CarModel* car;
+	CubeModel* light;
+	GridModel* grid;
+	CubeModel* ground;
 	std::list<CarModel*> projectileCars;
 	std::vector<Model*> mobileModels;
 	std::vector<Model*> staticModels;

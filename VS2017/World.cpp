@@ -132,15 +132,40 @@ void World::Update(float dt)
 
 	// X - Toggle between SolidColor and Textured shaders
 	// Default (if any other shader is in use) - Turn on Textured shader
+	ShaderType defaultShader = ShaderType::SHADER_SOLID_COLOR;
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_X)) {
 		ShaderType shaderToggle = ShaderType::SHADER_TEXTURED;
 		ShaderType nextShaderToggle = ShaderType::SHADER_TEXTURED_UNCOLORED;
 		ShaderType currentShader = ShaderType(Renderer::GetCurrentShader());
+		grid->Hide();
+		ground->Show();
 		if (currentShader == shaderToggle) {
 			shaderToggle = nextShaderToggle;
 		}
 		else if (currentShader == nextShaderToggle) {
-			shaderToggle = ShaderType::SHADER_SOLID_COLOR;
+			shaderToggle = defaultShader;
+			grid->Show();
+			ground->Hide();
+		}
+
+		Renderer::SetShader(shaderToggle);
+	}
+
+	// B - Toggle between SolidColor and Lighting shaders
+	// Default (if any other shader is in use) - Turn on Lighting shader
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_B)) {
+		ShaderType shaderToggle = ShaderType::SHADER_LIGHTING;
+		ShaderType nextShaderToggle = ShaderType::SHADER_LIGHTING_TEXTURED;
+		ShaderType currentShader = ShaderType(Renderer::GetCurrentShader());
+		grid->Hide();
+		ground->Show();
+		if (currentShader == shaderToggle) {
+			shaderToggle = nextShaderToggle;
+		}
+		else if (currentShader == nextShaderToggle) {
+			shaderToggle = defaultShader;
+			grid->Show();
+			ground->Hide();
 		}
 
 		Renderer::SetShader(shaderToggle);
@@ -204,6 +229,8 @@ void World::Update(float dt)
 		projCar->SetCenterPosition(pos);
 		projCar->SetVelocity(lookAt * projectileSpeed);
 		projCar->SetSizeScale(sizeScale);
+		projCar->SetIsMoving(true); // to spin wheels :^)
+		projCar->GenerateModel();
 
 		if (projectileCars.size() > 5) {
 			projectileCars.pop_front();
@@ -221,15 +248,7 @@ void World::Draw()
 {
 	Renderer::BeginFrame();
 
-	// Set shader to use
-	glUseProgram(Renderer::GetShaderProgramID());
-
-	// This looks for the MVP Uniform variable in the Vertex Program
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-
-	// Send the view projection constants to the shader
-	mat4 VP = GetInstancedViewProjectionMatrix();
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+	Renderer::BindUniforms();
 
 	// Draw models
 	for (vector<Model*>::iterator it = mobileModels.begin(); it < mobileModels.end(); ++it)
@@ -248,6 +267,8 @@ void World::Draw()
 		(*it)->Draw();
 	}
 
+	light->Draw();
+
 	Renderer::EndFrame();
 }
 
@@ -257,21 +278,28 @@ const Camera* World::GetCurrentCamera() const
 }
 
 void World::InitializeModels() {
+	light = new CubeModel(vec3(0.0f, 30.0f, 0.0f));
+	light->SetSizeScale(vec3(1.0f, 1.0f, 1.0f));
+	light->SetColor(vec3(1.0f, 1.0f, 1.0f));
+	light->SetSpecificShader(ShaderType::SHADER_SOLID_COLOR);
+	light->GenerateModel();
+
 	car = new CarModel(vec3(0.0f, 0.25f, 0.0f));
+	car->GenerateModel();
 
-	// Add a cube, why not.
-	/*CubeModel* cubeButNotInCenter = new CubeModel(vec3(10.0f, 0.5f, 1.0f));
-	CarModel* cubeButNotInCenter2 = new CarModel(vec3(10.0f, 0.5f, 6.0f));
-	mobileModels.push_back(cubeButNotInCenter);
-	mobileModels.push_back(cubeButNotInCenter2);*/
-
-	CylinderModel* cylinder = new CylinderModel(vec3(0.0f, 0.5f, 20.0f));
-	mobileModels.push_back(cylinder);
-
-	GridModel* grid = new GridModel();
+	grid = new GridModel(vec3(0.0f, 0.0f, 0.0f));
+	grid->GenerateModel();
 	staticModels.push_back(grid);
 
-	AxisModel* axis = new AxisModel();
+	ground = new CubeModel(vec3(0.0f, -1.0f, 0.0f));
+	ground->SetSizeScale(vec3(100.0f, 0.5f, 100.0f));
+	ground->SetTexture(TextureType::TEXTURE_GRASS);
+	ground->GenerateModel();
+	ground->Hide();
+	staticModels.push_back(ground);
+
+	AxisModel* axis = new AxisModel(vec3(0.0f, 0.0f, 0.0f));
+	axis->GenerateModel();
 	staticModels.push_back(axis);
 
 }

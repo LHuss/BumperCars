@@ -14,11 +14,16 @@ CubeModel::CubeModel(
 	mShapeScale = shapeScale;
 	mRotation = rotation;
 	mColor = color;
+}
 
+CubeModel::~CubeModel() {
+	glDeleteBuffers(1, &mVertexBuffer);
+	glDeleteVertexArrays(1, &mVertexArray);
+}
 
-	
-	Vertex vertexBuffer[] = {  // position,					normal,						color,  aUV  
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) }, // left
+void CubeModel::GenerateModel() {
+	Vertex vertexBuffer[] = {  // position,					normal,						color,  aUV,				ambient		specular
+								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f)	 }, // left
 								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
 								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
 
@@ -119,20 +124,29 @@ CubeModel::CubeModel(
 	glEnableVertexAttribArray(3);
 }
 
-CubeModel::~CubeModel() {
-	glDeleteBuffers(1, &mVertexBuffer);
-	glDeleteVertexArrays(1, &mVertexArray);
-}
-
 void CubeModel::Update(float dt) {
 	Model::Update(dt);
 }
 
 void CubeModel::Draw()
 {
-	if (Renderer::ShaderNeedsTexture()) {
-		glBindTexture(GL_TEXTURE_2D, Renderer::GetTextureID(mTexture));
+	if (mHidden) {
+		return;
 	}
+
+	ShaderType programShader = ShaderType(Renderer::GetCurrentShader());
+	Renderer::SwapAndUseShader(mSpecificShader);
+
+	if (Renderer::ShaderNeedsTexture()) {
+		if (mTexture == TextureType::TEXTURE_NULL) {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+		else {
+			glBindTexture(GL_TEXTURE_2D, Renderer::GetTextureID(mTexture));
+		}
+	}
+
+	Renderer::BindTextureUniforms(mTexture);
 
 	glBindVertexArray(mVertexArray);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
@@ -140,5 +154,7 @@ void CubeModel::Draw()
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
 
-	glDrawArrays(mDrawMode, 0, 36); 
+	glDrawArrays(mDrawMode, 0, 36);
+
+	Renderer::SwapAndUseShader(programShader);
 }

@@ -18,7 +18,11 @@ enum ShaderType
 	SHADER_SOLID_COLOR,
 	SHADER_TEXTURED,
 	SHADER_TEXTURED_UNCOLORED,
-	NUM_SHADERS
+	SHADER_LIGHTING,
+	SHADER_LIGHTING_TEXTURED,
+	SHADER_LIGHTING_TEXTURED_TWOPASS,
+	NUM_SHADERS,
+	SHADER_NULL
 };
 
 enum TextureType
@@ -29,9 +33,15 @@ enum TextureType
 	TEXTURE_STEEL,
 	TEXTURE_TIRE,
 	TEXTURE_WOOD,
-	NUM_TEXTURES
+	NUM_TEXTURES,
+	TEXTURE_NULL
 };
 
+struct Material {
+	glm::vec3 diffuse;
+	float specular;
+	float shininess;
+};
 
 class Renderer
 {
@@ -51,6 +61,9 @@ public:
 	static void SetShader(ShaderType type);
 
 	static unsigned int GetTextureID(TextureType texture);
+	static float GetShininess(TextureType texture);
+	static float GetAmbientStrength(TextureType texture);
+	static float GetSpecularStrength(TextureType texture);
 
 	static void CheckForErrors();
 	static bool PrintError();
@@ -58,6 +71,9 @@ public:
 	static bool ShaderNeedsTexture();
 
 	static void SwapAndUseShader(ShaderType type);
+
+	static void BindUniforms();
+	static void BindTextureUniforms(TextureType texture);
 
 private:
 	static GLFWwindow* spWindow;

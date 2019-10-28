@@ -13,6 +13,7 @@ public:
 
 	virtual void Update(float dt);
 	virtual void Draw();
+	virtual void GenerateModel();
 
 private:
 	struct Vertex {
@@ -20,6 +21,7 @@ private:
 		glm::vec3 normal;
 		glm::vec3 color;
 		glm::vec2 aUV;
+	//	float 
 	};
 
 	unsigned int mVertexArray;

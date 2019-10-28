@@ -6,10 +6,18 @@
 
 using namespace glm;
 
-AxisModel::AxisModel(
-) {
-	mCenterPosition = vec3(0.0f, -0.2f, 0.0f);
+AxisModel::AxisModel(vec3 position) {
+	mCenterPosition = position;
 	mDrawMode = GL_LINES;
+	mSpecificShader = ShaderType::SHADER_SOLID_COLOR;
+}
+
+AxisModel::~AxisModel() {
+	glDeleteBuffers(1, &mVertexBuffer);
+	glDeleteVertexArrays(1, &mVertexArray);
+}
+
+void AxisModel::GenerateModel() {
 	vec3 red = ComputeColorFromRGB(255, 0, 0);
 	vec3 green = ComputeColorFromRGB(0, 255, 0);
 	vec3 blue = ComputeColorFromRGB(0, 0, 255);
@@ -57,27 +65,19 @@ AxisModel::AxisModel(
 	glEnableVertexAttribArray(2);
 }
 
-AxisModel::~AxisModel() {
-	glDeleteBuffers(1, &mVertexBuffer);
-	glDeleteVertexArrays(1, &mVertexArray);
-}
-
 void AxisModel::Update(float dt) {
 	Model::Update(dt);
 }
 
 void AxisModel::Draw()
 {
+	if (mHidden) {
+		return;
+	}
+
 	// Swap Shaders
-	unsigned int currentShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(ShaderType::SHADER_SOLID_COLOR);
-
-	glUseProgram(Renderer::GetShaderProgramID());
-
-	// Update ViewProjection of this shader program
-	mat4 VP = World::GetInstancedViewProjectionMatrix();
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+	ShaderType programShader = ShaderType(Renderer::GetCurrentShader());
+	Renderer::SwapAndUseShader(mSpecificShader);
 
 	//Draw
 	glBindVertexArray(mVertexArray);
@@ -85,11 +85,10 @@ void AxisModel::Draw()
 
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 
-	mat4 axeWorldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f)) * scale(mat4(1.0f), vec3(5.0f, 5.0f, 5.0f));
+	mat4 axeWorldMatrix = translate(mat4(1.0f), vec3(mCenterPosition.x, mCenterPosition.y, mCenterPosition.z)) * scale(mat4(1.0f), vec3(5.0f, 5.0f, 5.0f));
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &axeWorldMatrix[0][0]);
 	glDrawArrays(GL_LINES, 0, 6);
 
 	// Swap Back
-	Renderer::SetShader(ShaderType(currentShader));
-	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::SwapAndUseShader(programShader);
 }

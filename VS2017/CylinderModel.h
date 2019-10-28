@@ -11,6 +11,7 @@ public:
 		TextureType texture = TextureType::TEXTURE_TIRE, TextureType circleTexture = TextureType::TEXTURE_STEEL
 	);
 	virtual ~CylinderModel();
+	virtual void GenerateModel();
 
 	void GenerateCylinder();
 	void GenerateCircles();
@@ -34,7 +35,9 @@ private:
 	
 	std::vector<Vertex> mWall;
 	std::vector<Vertex> mNegCircle;
+	glm::vec3 mNegCircleCenter;
 	std::vector<Vertex> mPosCircle;
+	glm::vec3 mPosCircleCenter;
 
 	std::vector<Vertex> mCylinderPoints;
 

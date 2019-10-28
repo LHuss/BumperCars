@@ -6,15 +6,23 @@
 
 using namespace glm;
 
-GridModel::GridModel(
-) {
-	mCenterPosition = vec3(0.0f, -0.4f, 0.0f);
+GridModel::GridModel(vec3 position) {
+	mCenterPosition = position;
+	mSpecificShader = ShaderType::SHADER_SOLID_COLOR;
+}
+
+GridModel::~GridModel() {
+	glDeleteBuffers(1, &mVertexBuffer);
+	glDeleteVertexArrays(1, &mVertexArray);
+}
+
+void GridModel::GenerateModel() {
 	// light blue
 	vec3 lightBlue = ComputeColorFromRGB(68, 85, 90);
-	
+
 	SetDrawMode(GL_LINES);
 
-	vec3 vertexBuffer[] = { 
+	vec3 vertexBuffer[] = {
 		vec3(0.0f, 0.0f, 0.0f),		lightBlue,		// Light blue square - for grid		
 		vec3(0.0f, 0.0f, 1.0f),		lightBlue,
 
@@ -60,21 +68,20 @@ GridModel::GridModel(
 	glEnableVertexAttribArray(2);
 }
 
-GridModel::~GridModel() {
-	glDeleteBuffers(1, &mVertexBuffer);
-	glDeleteVertexArrays(1, &mVertexArray);
-}
-
 void GridModel::Update(float dt) {
 	Model::Update(dt);
 }
 
 void GridModel::Draw()
 {
+	if (mHidden) {
+		return;
+	}
+
 	// Save current shader to swap back
-	ShaderType currentShader = ShaderType(Renderer::GetCurrentShader());
+	ShaderType programShader = ShaderType(Renderer::GetCurrentShader());
 	// Swap shaders
-	Renderer::SwapAndUseShader(ShaderType::SHADER_SOLID_COLOR);
+	Renderer::SwapAndUseShader(mSpecificShader);
 
 
 	// Draw
@@ -83,20 +90,14 @@ void GridModel::Draw()
 
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 
-	mat4 gridWorldMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.0f));
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &gridWorldMatrix[0][0]);
-	glDrawArrays(GL_LINES, 0, 8); // 8 vertices (2 per line), starting at index 0
-
 	for (int i = -50; i < 50; i++) {
 		for (int j = -50; j < 50; j++) {
-			if (i == 0 && j == 0) { continue; } // "center" tile already drawn above
-
-			gridWorldMatrix = translate(mat4(1.0f), vec3(0.0f + i, 0.0f, 0.0f + j));
+			mat4 gridWorldMatrix = translate(mat4(1.0f), vec3(mCenterPosition.x + i, mCenterPosition.y, mCenterPosition.z + j));
 			glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &gridWorldMatrix[0][0]);
 			glDrawArrays(GL_LINES, 0, 8);
 		}
 	}
 
 	// Swap Back
-	Renderer::SwapAndUseShader(currentShader);
+	Renderer::SwapAndUseShader(programShader);
 }
