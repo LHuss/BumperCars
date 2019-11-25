@@ -278,13 +278,18 @@ const Camera* World::GetCurrentCamera() const
 }
 
 void World::InitializeModels() {
+	vec3 darkSlateGray(47, 79, 79);
+	vec3 silver(192, 192, 192);
+	vec3 gold(255, 215, 0);
+
 	light = new CubeModel(vec3(0.0f, 30.0f, 0.0f));
 	light->SetSizeScale(vec3(1.0f, 1.0f, 1.0f));
 	light->SetColor(vec3(1.0f, 1.0f, 1.0f));
 	light->SetSpecificShader(ShaderType::SHADER_SOLID_COLOR);
 	light->GenerateModel();
 
-	car = new CarModel(vec3(0.0f, 0.25f, 0.0f));
+	car = new CarModel(vec3(0.0f, 0.75f, 0.0f));
+	car->SetColorFromVec3(gold);
 	car->GenerateModel();
 
 	grid = new GridModel(vec3(0.0f, 0.0f, 0.0f));
@@ -293,7 +298,7 @@ void World::InitializeModels() {
 
 	ground = new CubeModel(vec3(0.0f, -1.0f, 0.0f));
 	ground->SetSizeScale(vec3(100.0f, 0.5f, 100.0f));
-	ground->SetTexture(TextureType::TEXTURE_GRASS);
+	ground->SetSpecificShader(ShaderType::SHADER_LIGHTING);
 	ground->GenerateModel();
 	ground->Hide();
 	staticModels.push_back(ground);
@@ -301,7 +306,6 @@ void World::InitializeModels() {
 	AxisModel* axis = new AxisModel(vec3(0.0f, 0.0f, 0.0f));
 	axis->GenerateModel();
 	staticModels.push_back(axis);
-
 }
 
 mat4 World::GetInstancedViewProjectionMatrix() {

@@ -90,7 +90,7 @@ void CylinderModel::GenerateCircles() {
 	mNegCircle.clear();
 	mPosCircle.clear();
 
-	vec3 circleCenters[2] = { vec3(0.0f, 0.5f, -0.5f), vec3(0.0f, 0.5f, 0.5f) };
+	vec3 circleCenters[2] = { vec3(0.0f, 0.0f, -0.5f), vec3(0.0f, 0.0f, 0.5f) };
 	vec3 negNormal(0.0f, 0.0f, -1.0f);
 	vec3 posNormal(0.0f, 0.0f, 1.0f);
 	float radius = 0.5f;

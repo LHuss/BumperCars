@@ -1,17 +1,3 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (D:\workspace\COMP 371\A1-COMP371\VS2017\/../Build/Debug/) contains files shared from another project (Labs.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  AxisModel.cpp
-  Camera.cpp
-  CarModel.cpp
-  CubeModel.cpp
-  CylinderModel.cpp
-  EventManager.cpp
-  FirstPersonCamera.cpp
-D:\workspace\COMP 371\A1-COMP371\Source\FirstPersonCamera.cpp(45,45): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-  GridModel.cpp
-  main.cpp
-  Model.cpp
-  Renderer.cpp
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (D:\ws\COMP371\A1-COMP371\VS2017\/../Build/Debug/) contains files shared from another project (Labs.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   World.cpp
-  Generating Code...
-D:\workspace\COMP 371\A1-COMP371\Source\FirstPersonCamera.cpp(46,43): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-  Labs.vcxproj -> D:\workspace\COMP 371\A1-COMP371\VS2017\/../Bin/Assignments_40000298-Debug.exe
+  Labs.vcxproj -> D:\ws\COMP371\A1-COMP371\VS2017\/../Bin/Assignments_40000298-Debug.exe

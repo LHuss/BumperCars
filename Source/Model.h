@@ -26,6 +26,7 @@ public:
 	void SetPointRotation(glm::vec3 rotation);
 	void SetColor(glm::vec3 color);
 	void SetColorFromRGB(int r, int g, int b);
+	void SetColorFromVec3(glm::vec3 rgb);
 	void SetDrawMode(GLenum drawMode);
 	void SetTexture(TextureType texture);
 	void SetSpecificShader(ShaderType shader);
@@ -54,12 +55,19 @@ protected:
 	glm::mat4 ComputeRotationMatrix(glm::vec3 rotation) const;
 
 	glm::vec3 mCenterPosition;
+	glm::vec3 iCenterPosition;
 	glm::vec3 mCenterShift;
+	glm::vec3 iCenterShift;
 	glm::vec3 mSizeScale;
+	glm::vec3 iSizeScale;
 	glm::vec3 mShapeScale;
+	glm::vec3 iShapeScale;
 	glm::vec3 mRotation;
+	glm::vec3 iRotation;
 	glm::vec3 mPointRotation;
+	glm::vec3 iPointRotation;
 	glm::vec3 mColor;
+	glm::vec3 iColor;
 
 	ShaderType mSpecificShader;
 

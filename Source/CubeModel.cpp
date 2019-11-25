@@ -22,54 +22,57 @@ CubeModel::~CubeModel() {
 }
 
 void CubeModel::GenerateModel() {
-	Vertex vertexBuffer[] = {  // position,					normal,						color,  aUV,				ambient		specular
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f)	 }, // left
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+	float lowerBound = -0.5f;
+	float upperBound = 0.5f;
 
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
+	Vertex vertexBuffer[] = {  // position,									normal,						color,  aUV,				ambient		specular
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f)	 }, // left
+								{ vec3(lowerBound,lowerBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
+								{ vec3(lowerBound, upperBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) }, // far
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
+								{ vec3(lowerBound, upperBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+								{ vec3(lowerBound, upperBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) }, // far
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // bottom
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(upperBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(.0f, 1.0f) },
-								{ vec3(-0.5f,0.0f,-0.5f),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // bottom
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) }, // near
-								{ vec3(-0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(lowerBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(.0f, 1.0f) },
+								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) }, // near
+								{ vec3(lowerBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // right
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(0.5f,0.0f,-0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(0.5f,0.0f, 0.5f),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(upperBound, upperBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // right
+								{ vec3(upperBound,lowerBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound, upperBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }, //top
-								{ vec3(0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(upperBound,lowerBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(upperBound, upperBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(upperBound,lowerBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(-0.5f, 1.0f,-0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(-0.5f, 1.0f, 0.5f),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }
+								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }, //top
+								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+
+								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }
 	};
 
 	// Create a vertex array

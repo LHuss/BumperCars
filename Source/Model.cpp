@@ -16,10 +16,13 @@ using namespace std;
 using namespace glm;
 
 Model::Model() :
-	mCenterPosition(0.0f, 0.0f, 0.0f), mCenterShift(1.0f, 1.0f, 1.0f),
-	mSizeScale(1.0f, 1.0f, 1.0f), mShapeScale(1.0f, 1.0f, 1.0f),
-	mRotation(0.0f, 0.0f, 0.0f), mPointRotation(0.0f, 0.0f, 0.0f),
-	mColor(0.5f, 0.5f, 0.5f),
+	mCenterPosition(0.0f, 0.0f, 0.0f), iCenterPosition(mCenterPosition),
+	mCenterShift(1.0f, 1.0f, 1.0f), iCenterShift(mCenterShift),
+	mSizeScale(1.0f, 1.0f, 1.0f), iSizeScale(mSizeScale),
+	mShapeScale(1.0f, 1.0f, 1.0f), iShapeScale(mShapeScale),
+	mRotation(0.0f, 0.0f, 0.0f), iRotation(mRotation),
+	mPointRotation(0.0f, 0.0f, 0.0f), iPointRotation(mPointRotation),
+	mColor(0.5f, 0.5f, 0.5f), iColor(mColor),
 	mDrawMode(GL_TRIANGLES), mRotationVelocity(0.0f, 0.0f, 0.0f),
 	mTexture(TextureType::TEXTURE_NULL), mSpecificShader(ShaderType::SHADER_NULL),
 	mHidden(false) {
@@ -110,6 +113,10 @@ void Model::SetColor(glm::vec3 color) {
 
 void Model::SetColorFromRGB(int r, int g, int b) {
 	mColor = ComputeColorFromRGB(r, g, b);
+}
+
+void Model::SetColorFromVec3(vec3 rgb) {
+	mColor = ComputeColorFromRGB(rgb.x, rgb.y, rgb.z);
 }
 
 void Model::SetDrawMode(GLenum drawMode) {

@@ -14,11 +14,17 @@ CarModel::CarModel(
 	float wheelSpin
 ) {
 	mCenterPosition = centerPosition;
+	iCenterPosition = centerPosition;
 	mCenterShift = centerShift;
+	iCenterShift = centerShift;
 	mSizeScale = sizeScale;
+	iSizeScale = sizeScale;
 	mShapeScale = shapeScale;
+	iShapeScale = shapeScale;
 	mRotation = rotation;
+	iRotation = rotation;
 	mColor = color;
+	iColor = color;
 	mVelocity = velocity;
 	mWheelAngle = wheelAngle;
 	mWheelSpin = wheelSpin;
@@ -49,8 +55,8 @@ void CarModel::GenerateModel() {
 	vec3 silver = ComputeColorFromRGB(192, 192, 192);
 	vec3 gold = ComputeColorFromRGB(255, 215, 0);
 
-	vec3 bodyShift = vec3(0.0f, 0.0f, 0.0f);
 	vec3 bodyShape = vec3(2.0f, 1.0f, 1.0f) * mShapeScale;
+	vec3 bodyShift = vec3(0.0f, 0.0f, 0.0f);
 	body = new CubeModel(
 		mCenterPosition, bodyShift,
 		mSizeScale, bodyShape,
@@ -60,8 +66,8 @@ void CarModel::GenerateModel() {
 	body->GenerateModel();
 	cModels.push_back(body);
 
-	vec3 roofShift = vec3(0.0f, 1.0f, 0.0f);
 	vec3 roofShape = vec3(1.0f, 0.5f, 0.5f) * mShapeScale;
+	vec3 roofShift = vec3(0.0f, (roofShape.y / 2.0f) + (bodyShape.y / 2.0f), 0.0f);
 	roof = new CubeModel(
 		mCenterPosition, roofShift,
 		mSizeScale, roofShape,
@@ -71,19 +77,19 @@ void CarModel::GenerateModel() {
 	roof->GenerateModel();
 	cModels.push_back(roof);
 
-	vec3 bonnetShift = vec3(1.3625f, 0.0f, 0.0f);
 	vec3 bonnetShape = vec3(0.75f, 0.6f, 1.0f) * mShapeScale;
+	vec3 bonnetShift = vec3((bonnetShape.x / 2.0f) + (bodyShape.x / 2.0f), (bonnetShape.y / 2.0f) - (bodyShape.y / 2.0f), 0.0f);
 	bonnet = new CubeModel(
 		mCenterPosition, bonnetShift,
 		mSizeScale, bonnetShape,
-		mRotation, silver
+		mRotation, mColor
 	);
 	bonnet->SetTexture(TextureType::TEXTURE_STEEL);
 	bonnet->GenerateModel();
 	cModels.push_back(bonnet);
 
-	vec3 trunkShift = vec3(-1.25f, 0.0f, 0.0f);
 	vec3 trunkShape = vec3(0.5f, 0.8f, 1.0f) * mShapeScale;
+	vec3 trunkShift = vec3(-((trunkShape.x / 2.0f) + (bodyShape.x / 2.0f)), (trunkShape.y / 2.0f) - (bodyShape.y / 2.0f), 0.0f);
 	trunk = new CubeModel(
 		mCenterPosition, trunkShift,
 		mSizeScale, trunkShape,
@@ -99,8 +105,8 @@ void CarModel::GenerateModel() {
 	int pos = 0;
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
-			vec3 wheelShift = vec3(xPos[i], -0.25f, zPos[j]);
 			vec3 wheelShape = vec3(0.5f, 0.5f, 0.25f) * mShapeScale;
+			vec3 wheelShift = vec3(xPos[i], -(bodyShape.y / 2.0f), zPos[j]);
 			wheels[pos] = new CylinderModel(
 				mCenterPosition, wheelShift,
 				mSizeScale, wheelShape,
@@ -124,12 +130,12 @@ void CarModel::GenerateModel() {
 }
 
 void CarModel::Reset() {
-	mCenterPosition = glm::vec3(0.0f, 0.25f, 0.0f);
-	mCenterShift = glm::vec3(0.0f, 0.0f, 0.0f);
-	mSizeScale = glm::vec3(1.0f, 1.0f, 1.0f);
-	mShapeScale = glm::vec3(1.0f, 1.0f, 1.0f);
-	mRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	mColor = glm::vec3(0.5f, 0.5f, 0.5f);
+	mCenterPosition = iCenterPosition;
+	mCenterShift = iCenterShift;
+	mSizeScale = iSizeScale;
+	mShapeScale = iShapeScale;
+	mRotation = iRotation;
+	mColor = iColor;
 	mWheelAngle = 0.0f;
 }
 
@@ -171,13 +177,12 @@ void CarModel::Update(float dt) {
 		(*it)->SetDrawMode(mDrawMode);
 	}
 
-	/*for (auto it : wheels) {
+	for (auto it : wheels) {
 		it->SetPointRotation(wheelSpin);
-	}*/
+	}
 
 	for (auto it : frontWheels) {
-		it->SetPointRotation(wheelTurn);
-		//it->SetPointRotation(frontWheelRotation);
+		it->SetPointRotation(frontWheelRotation);
 	}
 }
 
@@ -193,13 +198,18 @@ void CarModel::Draw() {
 }
 
 void CarModel::Shift(float direction) {
+	if (direction == 0.0f) return;
+
 	mMovementDirection = direction > 0.0f ? 1.0f : direction < 0.0f ? -1.0f : 0.0f;
 
 	vec3 distance = vec3(1.0f, 0.0f, 0.0f) * direction;
-	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 1)
-		* rotate(mat4(1.0f), radians(mRotation.x), vec3(1.0f, 0.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mRotation.y), vec3(0.0f, 1.0f, 0.0f))
-		* rotate(mat4(1.0f), radians(mRotation.z), vec3(0.0f, 0.0f, 1.0f));
+	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 0)
+		* ComputeRotationMatrix(mRotation);
+	
+	if (mRotation.y <= 90.0f || mRotation.y > 270.0f) {
+		distanceShift.y = -distanceShift.y;
+	}
+
 	mCenterPosition += vec3(distanceShift.x, distanceShift.y, -distanceShift.z);
 }
 
