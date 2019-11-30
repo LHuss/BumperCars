@@ -191,17 +191,20 @@ void Renderer::BindUniforms() {
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Do the same shit, but for light data
-	CubeModel* light = World::GetInstance()->GetLight();
+	PointLight* light = World::GetInstance()->GetPointLights()[0];
 	GLuint LightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.position");
-	glm::vec3 lightPos = light->GetCenterPosition();
+	glm::vec3 lightPos = light->GetPosition();
 	glUniform3f(LightPosLocation, lightPos.x, lightPos.y, lightPos.z);
 
 	GLuint LightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.ambient");
-	glUniform3f(LightAmbientLoc, 0.9f, 0.9f, 0.9f);
+	glm::vec3 lightAmb = light->GetAmbient();
+	glUniform3f(LightAmbientLoc, lightAmb.x, lightAmb.y, lightAmb.z);
 	GLuint LightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.diffuse");
-	glUniform3f(LightDiffuseLoc, 0.8f, 0.8f, 0.8f);
+	glm::vec3 lightDiff = light->GetDiffuse();
+	glUniform3f(LightDiffuseLoc, lightDiff.x, lightDiff.y, lightDiff.z);
 	GLuint LightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "light.specular");
-	glUniform3f(LightSpecularLoc, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightSpec = light->GetSpecular();
+	glUniform3f(LightSpecularLoc, lightSpec.x, lightSpec.y, lightSpec.z);
 
 	GLuint ViewPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "viewPos");
 	glm::vec3 viewPos = World::GetInstance()->GetCurrentCamera()->GetPosition();

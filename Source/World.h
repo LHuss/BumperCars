@@ -18,6 +18,8 @@
 #include "GridModel.h"
 #include "Camera.h"
 #include "Model.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 
 struct LightSource {
 	glm::vec3 position;
@@ -32,7 +34,8 @@ public:
 
 	static World* GetInstance();
 
-	CubeModel* GetLight() const { return light; }
+	std::vector<PointLight*> GetPointLights() const { return mPointLights; }
+	std::vector<SpotLight*> GetSpotLights() const { return mSpotLights; }
 
 	void Update(float dt);
 	void Draw();
@@ -47,7 +50,6 @@ private:
 	static World* instance;
 
 	CarModel* car;
-	CubeModel* light;
 	GridModel* grid;
 	CubeModel* ground;
 	std::list<CarModel*> projectileCars;
@@ -55,4 +57,7 @@ private:
 	std::vector<Model*> staticModels;
 	std::vector<Camera*> mCamera;
 	unsigned int mCurrentCamera;
+
+	std::vector<PointLight*> mPointLights;
+	std::vector<SpotLight*> mSpotLights;
 };

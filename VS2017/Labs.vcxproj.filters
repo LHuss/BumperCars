@@ -105,6 +105,15 @@
     <ClCompile Include="..\Source\CarModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CarModel.h">
@@ -138,6 +147,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Light.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\PointLight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SpotLight.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

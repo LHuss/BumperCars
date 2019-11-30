@@ -43,7 +43,6 @@ World::~World()
 	{
 		delete* it;
 	}
-
 	staticModels.clear();
 
 	// Mobile Models
@@ -60,6 +59,19 @@ World::~World()
 		delete* it;
 	}
 	mCamera.clear();
+
+	// Lights
+	for (vector<PointLight*>::iterator it = mPointLights.begin(); it < mPointLights.end(); ++it)
+	{
+		delete* it;
+	}
+	mPointLights.clear();
+
+	for (vector<SpotLight*>::iterator it = mSpotLights.begin(); it < mSpotLights.end(); ++it)
+	{
+		delete* it;
+	}
+	mSpotLights.clear();
 
 	delete(car);
 }
@@ -241,7 +253,6 @@ void World::Update(float dt)
 	for (list<CarModel*>::iterator it = projectileCars.begin(); it != projectileCars.end(); ++it) {
 		(*it)->Update(dt);
 	}
-
 }
 
 void World::Draw()
@@ -267,7 +278,13 @@ void World::Draw()
 		(*it)->Draw();
 	}
 
-	light->Draw();
+	// Lights
+	for (vector<SpotLight*>::iterator it = mSpotLights.begin(); it != mSpotLights.end(); ++it) {
+		(*it)->GetLightModel()->Draw();
+	}
+	for (vector<PointLight*>::iterator it = mPointLights.begin(); it != mPointLights.end(); ++it) {
+		(*it)->GetLightModel()->Draw();
+	}
 
 	Renderer::EndFrame();
 }
@@ -282,11 +299,14 @@ void World::InitializeModels() {
 	vec3 silver(192, 192, 192);
 	vec3 gold(255, 215, 0);
 
-	light = new CubeModel(vec3(0.0f, 30.0f, 0.0f));
-	light->SetSizeScale(vec3(1.0f, 1.0f, 1.0f));
-	light->SetColor(vec3(1.0f, 1.0f, 1.0f));
-	light->SetSpecificShader(ShaderType::SHADER_SOLID_COLOR);
-	light->GenerateModel();
+	vec3 centerPos(0.0f, 30.0f, 0.0f);
+	vec3 color(1.0f, 1.0f, 1.0f);
+	CubeModel* lightCube = new CubeModel();
+	lightCube->SetSizeScale(vec3(2.0f, 2.0f, 2.0f));
+	PointLight* pointLight = new PointLight(centerPos, color);
+	pointLight->SetLightModel(lightCube);
+	pointLight->GetLightModel()->GenerateModel();
+	mPointLights.push_back(pointLight);
 
 	car = new CarModel(vec3(0.0f, 0.75f, 0.0f));
 	car->SetColorFromVec3(gold);
