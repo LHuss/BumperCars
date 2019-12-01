@@ -60,7 +60,7 @@ glm::mat4 Model::GetWorldMatrix() const {
 	return worldMatrix;
 }
 
-mat4 Model::ComputeRotationMatrix(vec3 rotation) const {
+mat4 Model::ComputeRotationMatrix(vec3 rotation) {
 	return mat4(1.0f)
 		* rotate(mat4(1.0f), radians(rotation.x), vec3(1.0f, 0.0f, 0.0f))
 		* rotate(mat4(1.0f), radians(rotation.y), vec3(0.0f, 1.0f, 0.0f))

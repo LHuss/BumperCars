@@ -15,6 +15,8 @@ SpotLight::SpotLight(
 	glm::vec3 specular,
 	Model* lightModel
 ): mDirection(direction), PointLight(centerPosition, color, ambient, diffuse, specular, lightModel) {
+	mCutOff = glm::cos(glm::radians(25.5f));
+	mOuterCutOff = glm::cos(glm::radians(35.5f));
 }
 
 SpotLight::~SpotLight() {
@@ -30,4 +32,18 @@ void SpotLight::SetCutOff(float cutOff) {
 
 void SpotLight::SetOuterCutOff(float outerCutOff) {
 	mOuterCutOff = outerCutOff;
+}
+
+void SpotLight::UpdateFromModel() {
+	vec3 newPos = mLightModel->GetCenterPosition() + mLightModel->GetCenterShift();
+
+	mat4 centerT = translate(mat4(1.0f), mLightModel->GetCenterPosition());
+
+	mat4 rot = Model::ComputeRotationMatrix(mLightModel->GetRotation());
+
+	mat4 shift = translate(mat4(1.0f), mLightModel->GetCenterShift());
+	
+	mat4 translated = centerT * rot * shift;
+
+	mPosition = vec3(translated[3]);
 }

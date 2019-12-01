@@ -100,16 +100,16 @@
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\Assets\Shaders\Lighting.fragmentshader" />
-    <None Include="..\Assets\Shaders\Lighting.vertexshader" />
-    <None Include="..\Assets\Shaders\Lighting_Textured.fragmentshader" />
-    <None Include="..\Assets\Shaders\Lighting_Textured.vertexshader" />
-    <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
-    <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
-    <None Include="..\Assets\Shaders\Textured.fragmentshader" />
-    <None Include="..\Assets\Shaders\Textured.vertexshader" />
-    <None Include="..\Assets\Shaders\Textured_Uncolored.fragmentshader" />
-    <None Include="..\Assets\Shaders\Textured_Uncolored.vertexshader" />
+    <None Include="..\Assets\Shaders\Lighting.frag" />
+    <None Include="..\Assets\Shaders\Lighting.vert" />
+    <None Include="..\Assets\Shaders\Lighting_Textured.frag" />
+    <None Include="..\Assets\Shaders\Lighting_Textured.vert" />
+    <None Include="..\Assets\Shaders\SolidColor.frag" />
+    <None Include="..\Assets\Shaders\SolidColor.vert" />
+    <None Include="..\Assets\Shaders\Textured.frag" />
+    <None Include="..\Assets\Shaders\Textured.vert" />
+    <None Include="..\Assets\Shaders\Textured_Uncolored.frag" />
+    <None Include="..\Assets\Shaders\Textured_Uncolored.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Lab04\Assets\Textures\brick.jpg" />

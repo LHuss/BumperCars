@@ -46,6 +46,11 @@ public:
 
 	static glm::mat4 GetInstancedViewProjectionMatrix();
 
+	void AddSpotLight(SpotLight* light);
+	void RemoveSpotLight(SpotLight* light);
+	void AddPointLight(PointLight* light);
+	void RemovePointLight(PointLight* light);
+
 private:
 	static World* instance;
 

@@ -74,6 +74,8 @@ public:
 	static void BindUniforms();
 	static void BindTextureUniforms(TextureType texture);
 
+	static char* ToCharArray(std::string in);
+
 private:
 	static GLFWwindow* spWindow;
 

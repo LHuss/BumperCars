@@ -49,10 +49,10 @@ public:
 	ShaderType GetShader() const { return mSpecificShader;  }
 
 	glm::vec3 ComputeColorFromRGB(int r, int g, int b);
+	static glm::mat4 ComputeRotationMatrix(glm::vec3 rotation);
 
 protected:
 	glm::vec3 BindRotation(glm::vec3 rotation);
-	glm::mat4 ComputeRotationMatrix(glm::vec3 rotation) const;
 
 	glm::vec3 mCenterPosition;
 	glm::vec3 iCenterPosition;

@@ -1,6 +1,8 @@
 #include "CarModel.h"
 #include "CubeModel.h"
 #include "Renderer.h"
+#include "SpotLight.h"
+#include "World.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -54,6 +56,8 @@ void CarModel::GenerateModel() {
 	vec3 darkSlateGray = ComputeColorFromRGB(47, 79, 79);
 	vec3 silver = ComputeColorFromRGB(192, 192, 192);
 	vec3 gold = ComputeColorFromRGB(255, 215, 0);
+	vec3 white = ComputeColorFromRGB(255, 255, 255);
+	vec3 orange = ComputeColorFromRGB(255, 140, 0);
 
 	vec3 bodyShape = vec3(2.0f, 1.0f, 1.0f) * mShapeScale;
 	vec3 bodyShift = vec3(0.0f, 0.0f, 0.0f);
@@ -127,6 +131,55 @@ void CarModel::GenerateModel() {
 			pos++;
 		}
 	}
+
+	float xPosLight[] = { (bodyShape.x / 2.0f + bonnetShape.x), -(bodyShape.x / 2.0f + trunkShape.x) };
+	float zPosLight[] = { 0.4f, -0.4f };
+	pos = 0;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			vec3 color = white;
+			if (i > 0) {
+				color = orange;
+			}
+
+
+			vec3 lightShape = vec3(0.1f, 0.1f, 0.1f) * mShapeScale;
+			vec3 lightShift = vec3(xPosLight[i], 0.0f, zPosLight[j]);
+			if (i == 0) {
+				lightShift.y = bonnetShift.y;
+			}
+			else {
+				lightShift.y = trunkShift.y;
+			}
+			CubeModel* lightCube = new CubeModel(
+				mCenterPosition, lightShift,
+				mSizeScale, lightShape,
+				mRotation, color
+			);
+			vec3 direction;
+			if (i == 0) {
+				direction = GetDirection();
+			}
+			else {
+				direction = -GetDirection();
+			}
+			SpotLight* light = new SpotLight(lightShift, direction, color);
+			light->SetLightModel(lightCube);
+			light->GetLightModel()->GenerateModel();
+			World::GetInstance()->AddSpotLight(light);
+
+			cModels.push_back(light->GetLightModel());
+			lights[pos] = light;
+
+			if (i == 0) {
+				headLights[j] = light;
+			}
+			else {
+				tailLights[j] = light;
+			}
+			pos++;
+		}
+	}
 }
 
 void CarModel::Reset() {
@@ -184,6 +237,20 @@ void CarModel::Update(float dt) {
 	for (auto it : frontWheels) {
 		it->SetPointRotation(frontWheelRotation);
 	}
+
+	for (auto it : lights) {
+		it->UpdateFromModel();
+	}
+
+	vec3 dir = GetLightDirection();
+
+	for (auto it : headLights) {
+		it->SetDirection(dir);
+	}
+
+	for (auto it : tailLights) {
+		it->SetDirection(-dir);
+	}
 }
 
 void CarModel::Draw() {
@@ -202,15 +269,17 @@ void CarModel::Shift(float direction) {
 
 	mMovementDirection = direction > 0.0f ? 1.0f : direction < 0.0f ? -1.0f : 0.0f;
 
-	vec3 distance = vec3(1.0f, 0.0f, 0.0f) * direction;
+	vec3 distance = GetDirection() * direction;
 	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 0)
 		* ComputeRotationMatrix(mRotation);
+
+	vec3 dor = GetDirection();
 	
 	if (mRotation.y <= 90.0f || mRotation.y > 270.0f) {
-		distanceShift.y = -distanceShift.y;
+		distance.y = -distance.y;
 	}
 
-	mCenterPosition += vec3(distanceShift.x, distanceShift.y, -distanceShift.z);
+	mCenterPosition += vec3(distance.x, distance.y, -distance.z);
 }
 
 void CarModel::Turn(float direction) {
@@ -223,4 +292,19 @@ void CarModel::SetIsMoving(bool isMoving) {
 
 void CarModel::SetVelocity(vec3 velocity) {
 	mVelocity = velocity;
+}
+
+vec3 CarModel::GetDirection() {
+	return GetDirection(mRotation);
+}
+
+vec3 CarModel::GetDirection(vec3 rotation) {
+	vec4 dir = vec4(1.0f, 0.0f, 0.0f, 0)
+		* ComputeRotationMatrix(rotation);
+	return normalize(dir);
+}
+
+vec3 CarModel::GetLightDirection() {
+	vec3 rotation = mRotation * vec3(1.0f, -1.0f, 1.0f);
+	return GetDirection(rotation);
 }

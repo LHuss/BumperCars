@@ -17,10 +17,14 @@ public:
 	void SetDiffuse(glm::vec3 diffuse);
 	void SetSpecular(glm::vec3 specular);
 
+	void Enable();
+	void Disable();
+
 	glm::vec3 GetColor() const { return mColor; }
 	glm::vec3 GetAmbient() const { return mAmbient; }
 	glm::vec3 GetDiffuse() const { return mDiffuse; }
 	glm::vec3 GetSpecular() const { return mSpecular; }
+	bool IsActive() const { return mActive; }
 
 protected:
 	glm::vec3 mColor;
@@ -28,4 +32,6 @@ protected:
 	glm::vec3 mAmbient;
 	glm::vec3 mDiffuse;
 	glm::vec3 mSpecular;
+
+	bool mActive;
 };

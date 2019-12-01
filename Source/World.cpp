@@ -20,6 +20,7 @@
 
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <algorithm>
 
 
 using namespace std;
@@ -298,14 +299,18 @@ void World::InitializeModels() {
 	vec3 darkSlateGray(47, 79, 79);
 	vec3 silver(192, 192, 192);
 	vec3 gold(255, 215, 0);
+	vec3 red(1.0f, 0.0f, 0.0f);
 
 	vec3 centerPos(0.0f, 30.0f, 0.0f);
 	vec3 color(1.0f, 1.0f, 1.0f);
 	CubeModel* lightCube = new CubeModel();
 	lightCube->SetSizeScale(vec3(2.0f, 2.0f, 2.0f));
+	lightCube->SetCenterPosition(centerPos);
 	PointLight* pointLight = new PointLight(centerPos, color);
 	pointLight->SetLightModel(lightCube);
 	pointLight->GetLightModel()->GenerateModel();
+	pointLight->SetLinear(0.0f);
+	pointLight->SetQuadratic(0.0f);
 	mPointLights.push_back(pointLight);
 
 	car = new CarModel(vec3(0.0f, 0.75f, 0.0f));
@@ -316,9 +321,9 @@ void World::InitializeModels() {
 	grid->GenerateModel();
 	staticModels.push_back(grid);
 
-	ground = new CubeModel(vec3(0.0f, -1.0f, 0.0f));
+	ground = new CubeModel(vec3(0.0f, -0.25f, 0.0f));
 	ground->SetSizeScale(vec3(100.0f, 0.5f, 100.0f));
-	ground->SetSpecificShader(ShaderType::SHADER_LIGHTING);
+	ground->SetTexture(TextureType::TEXTURE_GRASS);
 	ground->GenerateModel();
 	ground->Hide();
 	staticModels.push_back(ground);
@@ -330,4 +335,20 @@ void World::InitializeModels() {
 
 mat4 World::GetInstancedViewProjectionMatrix() {
 	return instance->GetCurrentCamera()->GetViewProjectionMatrix();
+}
+
+void World::AddSpotLight(SpotLight* light) {
+	mSpotLights.push_back(light);
+}
+
+void World::RemoveSpotLight(SpotLight* light) {
+	mSpotLights.erase(std::remove(mSpotLights.begin(), mSpotLights.end(), light), mSpotLights.end());
+}
+
+void World::AddPointLight(PointLight* light) {
+	mPointLights.push_back(light);
+}
+
+void World::RemovePointLight(PointLight* light) {
+	mPointLights.erase(std::remove(mPointLights.begin(), mPointLights.end(), light), mPointLights.end());
 }

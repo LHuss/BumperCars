@@ -17,34 +17,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Assets\Shaders\SolidColor.fragmentshader">
+    <None Include="..\Assets\Shaders\Lighting.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\SolidColor.vertexshader">
+    <None Include="..\Assets\Shaders\Lighting.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Textured.fragmentshader">
+    <None Include="..\Assets\Shaders\Lighting_Textured.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Textured.vertexshader">
+    <None Include="..\Assets\Shaders\Lighting_Textured.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Textured_Uncolored.fragmentshader">
+    <None Include="..\Assets\Shaders\SolidColor.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Textured_Uncolored.vertexshader">
+    <None Include="..\Assets\Shaders\SolidColor.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Lighting.fragmentshader">
+    <None Include="..\Assets\Shaders\Textured.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Lighting.vertexshader">
+    <None Include="..\Assets\Shaders\Textured.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Lighting_Textured.fragmentshader">
+    <None Include="..\Assets\Shaders\Textured_Uncolored.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="..\Assets\Shaders\Lighting_Textured.vertexshader">
+    <None Include="..\Assets\Shaders\Textured_Uncolored.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

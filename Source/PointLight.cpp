@@ -13,7 +13,7 @@ PointLight::PointLight(
 	glm::vec3 diffuse,
 	glm::vec3 specular,
 	Model* lightModel
-): mPosition(centerPosition), Light(color, ambient, diffuse, specular) {
+): mPosition(centerPosition), Light(color, ambient, diffuse, specular), mConstant(1.0f), mLinear(0.09f), mQuadratic(0.032f) {
 	mLightModel = lightModel;
 	AdjustLightModel();
 }
@@ -45,7 +45,6 @@ void PointLight::SetLightModel(Model* lightModel) {
 }
 
 void PointLight::AdjustLightModel() {
-	mLightModel->SetCenterPosition(mPosition);
 	mLightModel->SetColor(mColor);
 	mLightModel->SetSpecificShader(ShaderType::SHADER_SOLID_COLOR);
 }

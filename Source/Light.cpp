@@ -10,10 +10,19 @@ Light::Light(vec3 color, vec3 ambient, vec3 diffuse, vec3 specular) :
 	mColor(color),
 	mAmbient(ambient), 
 	mDiffuse(diffuse), 
-	mSpecular(specular) {
+	mSpecular(specular), 
+	mActive(true) {
 }
 
 Light::~Light() {
+}
+
+void Light::Enable() {
+	mActive = true;
+}
+
+void Light::Disable() {
+	mActive = false;
 }
 
 void Light::SetColor(vec3 color) {

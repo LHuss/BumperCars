@@ -20,6 +20,7 @@ public:
 	void SetDirection(glm::vec3 direction);
 	void SetCutOff(float cutOff);
 	void SetOuterCutOff(float outerCutOff);
+	void UpdateFromModel();
 
 	glm::vec3 GetDirection() const { return mDirection; }
 	float GetCutOff() const { return mCutOff; }

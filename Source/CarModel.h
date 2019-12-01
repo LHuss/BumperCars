@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "CubeModel.h"
 #include "CylinderModel.h"
+#include "SpotLight.h"
 
 class CarModel : public Model {
 public:
@@ -27,6 +28,10 @@ public:
 	void Reset();
 	
 	void UpdateWheels(float dt);
+
+	glm::vec3 GetDirection();
+	glm::vec3 GetDirection(glm::vec3 rotation);
+	glm::vec3 GetLightDirection();
 private:
 
 	CubeModel *body;
@@ -36,6 +41,9 @@ private:
 	CylinderModel *wheels[4];
 	CylinderModel *frontWheels[2];
 	CylinderModel *backWheels[2];
+	SpotLight* headLights[2];
+	SpotLight* tailLights[2];
+	SpotLight* lights[4];
 
 	std::vector<Model*> cModels;
 
