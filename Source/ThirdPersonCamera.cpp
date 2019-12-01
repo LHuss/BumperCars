@@ -6,7 +6,7 @@
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
 
-#include "FirstPersonCamera.h"
+#include "ThirdPersonCamera.h"
 #include "EventManager.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,16 +18,16 @@
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) : Camera(), mLookAt(0.0f, 0.0f, -1.0f), mFrozenLookAt(mLookAt), mFrozenPosition(mPosition), mHorizontalAngle(0.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mPanSpeed(2.0f), mTiltSpeed(3.0f), mZoomSpeed(0.05f), mAngularSpeed(2.5f), mIsHoldingLeft(false), mIsHoldingMiddle(false), mIsHoldingRight(false)
+ThirdPersonCamera::ThirdPersonCamera(glm::vec3 position) : Camera(), mLookAt(0.0f, 0.0f, -1.0f), mFrozenLookAt(mLookAt), mFrozenPosition(mPosition), mHorizontalAngle(0.0f), mVerticalAngle(-20.0f), mSpeed(5.0f), mPanSpeed(2.0f), mTiltSpeed(3.0f), mZoomSpeed(0.05f), mAngularSpeed(2.5f), mIsHoldingLeft(false), mIsHoldingMiddle(false), mIsHoldingRight(false)
 {
 	mPosition = position;
 }
 
-FirstPersonCamera::~FirstPersonCamera()
+ThirdPersonCamera::~ThirdPersonCamera()
 {
 }
 
-void FirstPersonCamera::Update(float dt)
+void ThirdPersonCamera::Update(float dt)
 {
 	// Prevent from having the camera move only when the cursor is within the windows
 	EventManager::DisableMouseCursor();
@@ -41,7 +41,7 @@ void FirstPersonCamera::Update(float dt)
 	// Mouse motion to get the variation in angle
 	double dx = EventManager::GetMouseMotionX();
 	double dy = EventManager::GetMouseMotionY();
-	
+
 	mHorizontalAngle -= dx * mAngularSpeed * dt;
 	mVerticalAngle -= dy * mAngularSpeed * dt;
 
@@ -121,31 +121,39 @@ void FirstPersonCamera::Update(float dt)
 	}
 }
 
-glm::mat4 FirstPersonCamera::GetViewMatrix() const
+glm::mat4 ThirdPersonCamera::GetViewMatrix() const
 {
+	float theta = radians(mHorizontalAngle);
+	float phi = radians(mVerticalAngle);
+
 	mat4 viewMatrix(1.0f);
 	if (mIsHoldingLeft) {
-		// viewMatrix = glm::lookAt(mPosition, mPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
-		viewMatrix = glm::lookAt(mFrozenPosition, mFrozenPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
+		vec3 pos = mFrozenPosition - vec3(radius * cosf(phi) * cosf(theta),
+								    radius * sinf(phi),
+									-radius * cosf(phi) * sinf(theta));
+		viewMatrix = glm::lookAt(pos, mFrozenPosition + mFrozenLookAt, vec3(0.0f, 1.0f, 0.0f));
 	}
 	else {
-		viewMatrix = glm::lookAt(mPosition, mPosition + mLookAt, vec3(0.0f, 1.0f, 0.0f));
+		vec3 pos = mPosition - vec3(radius * cosf(phi) * cosf(theta),
+			radius * sinf(phi),
+			-radius * cosf(phi) * sinf(theta));
+		viewMatrix = glm::lookAt(pos, mPosition + mLookAt, vec3(0.0f, 1.0f, 0.0f));
 	}
 	return viewMatrix;
 }
 
-void FirstPersonCamera::SetLookAt(vec3 lookAt) {
+void ThirdPersonCamera::SetLookAt(vec3 lookAt) {
 	mLookAt = lookAt;
 }
 
-void FirstPersonCamera::SetPosition(vec3 position) {
+void ThirdPersonCamera::SetPosition(vec3 position) {
 	mPosition = position;
 }
 
-void FirstPersonCamera::SetHorizontalAngle(float horizontalAngle) {
+void ThirdPersonCamera::SetHorizontalAngle(float horizontalAngle) {
 	mHorizontalAngle = horizontalAngle;
 }
 
-void FirstPersonCamera::SetVerticalAngle(float verticalAngle) {
+void ThirdPersonCamera::SetVerticalAngle(float verticalAngle) {
 	mVerticalAngle = verticalAngle;
 }

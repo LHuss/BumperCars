@@ -32,8 +32,8 @@ public:
 	glm::vec3 GetDirection();
 	glm::vec3 GetDirection(glm::vec3 rotation);
 	glm::vec3 GetLightDirection();
-private:
 
+protected:
 	CubeModel *body;
 	CubeModel *roof;
 	CubeModel *bonnet;

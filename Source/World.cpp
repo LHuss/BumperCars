@@ -13,6 +13,7 @@
 #include "FirstPersonCamera.h"
 #include "CubeModel.h"
 #include "CarModel.h"
+#include "PlayerControlledCarModel.h"
 #include "CylinderModel.h"
 #include "GridModel.h"
 #include "AxisModel.h"
@@ -33,8 +34,10 @@ World::World()
 	instance = this;
 
 	// Setup Camera
-	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCurrentCamera = 0;
+	FirstPersonCamera* freeCam = new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f));
+	freeCam->SetHorizontalAngle(90.0f);
+	mCameras.push_back(freeCam);
+	mCurrentCamera = CameraType::CAMERA_FREE;
 }
 
 World::~World()
@@ -55,11 +58,11 @@ World::~World()
 	mobileModels.clear();
 
 	// Camera
-	for (vector<Camera*>::iterator it = mCamera.begin(); it < mCamera.end(); ++it)
+	for (vector<Camera*>::iterator it = mCameras.begin(); it < mCameras.end(); ++it)
 	{
 		delete* it;
 	}
-	mCamera.clear();
+	mCameras.clear();
 
 	// Lights
 	for (vector<PointLight*>::iterator it = mPointLights.begin(); it < mPointLights.end(); ++it)
@@ -74,7 +77,7 @@ World::~World()
 	}
 	mSpotLights.clear();
 
-	delete(car);
+	delete(playerCar);
 }
 
 World* World::GetInstance()
@@ -87,8 +90,15 @@ void World::Update(float dt)
 	GLFWwindow* window = EventManager::GetWindow();
 	// User Inputs
 
+	// Switch Camera
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_C)) {
+		ToggleCamera();
+	}
+
 	// Update current Camera
-	mCamera[mCurrentCamera]->Update(dt);
+	if (mCurrentCamera == CameraType::CAMERA_FREE) {
+		mCameras[mCurrentCamera]->Update(dt);
+	}
 
 	// Update models
 	for (vector<Model*>::iterator it = mobileModels.begin(); it < mobileModels.end(); ++it)
@@ -111,8 +121,8 @@ void World::Update(float dt)
 		distanceShift -= carMovement;
 		isMoving = true;
 	}
-	car->Shift(distanceShift);
-	car->SetIsMoving(isMoving);
+	playerCar->Shift(distanceShift);
+	playerCar->SetIsMoving(isMoving);
 
 	float turnSpeed = 60.0f;
 	float turnAmount = turnSpeed * dt;
@@ -123,10 +133,10 @@ void World::Update(float dt)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		turnShift -= turnAmount;
 	}
-	car->Turn(turnShift);
+	playerCar->Turn(turnShift);
 
 	// P, L, T - Change draw modes for the car
-	GLenum drawMode = car->GetDrawMode();
+	GLenum drawMode = playerCar->GetDrawMode();
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_P)) {
 		drawMode = GL_POINTS;
 	}
@@ -136,11 +146,11 @@ void World::Update(float dt)
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_T)) {
 		drawMode = GL_TRIANGLES;
 	}
-	car->SetDrawMode(drawMode);
+	playerCar->SetDrawMode(drawMode);
 
 	// HOME - Reset car
 	if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_HOME)) {
-		car->Reset();
+		playerCar->Reset();
 	}
 
 	// X - Toggle between SolidColor and Textured shaders
@@ -190,19 +200,19 @@ void World::Update(float dt)
 		float randX = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
 		float randZ = -40 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (80)));
 		vec3 carPosition = vec3(randX, 0.25f, randZ);
-		car->SetCenterPosition(carPosition);
+		playerCar->SetCenterPosition(carPosition);
 	}
 
 	// U, J - Scale Up/Down car respectively
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
-		car->UpScale();
+		playerCar->UpScale();
 	}
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-		car->DownScale();
+		playerCar->DownScale();
 	}
 
 	// Q, E - Rotate car along x-axis
-	vec3 carRotation = car->GetRotation();
+	vec3 carRotation = playerCar->GetRotation();
 	const float angleStepSize = 5.0f;
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		carRotation += vec3(0.0f, 1.0f, 0.0f) * angleStepSize;
@@ -226,12 +236,12 @@ void World::Update(float dt)
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
 		carRotation -= vec3(1.0f, 0.0f, 0.0f) * angleStepSize;
 	}
-	car->SetRotation(carRotation);
+	playerCar->SetRotation(carRotation);
 	
-	car->Update(dt);
+	playerCar->Update(dt);
 
 	// Projectile Cars
-	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && mCurrentCamera == CameraType::CAMERA_FIRST && EventManager::CanUseKey(GLFW_KEY_5)) {
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && mCurrentCamera == CameraType::CAMERA_FREE && EventManager::CanUseKey(GLFW_KEY_5)) {
 		const float projectileSpeed = 5.0f;
 
 		vec3 lookAt = ((FirstPersonCamera*) GetCurrentCamera())->GetLookAt();
@@ -273,7 +283,7 @@ void World::Draw()
 		(*it)->Draw();
 	}
 
-	car->Draw();
+	playerCar->Draw();
 
 	for (list<CarModel*>::iterator it = projectileCars.begin(); it != projectileCars.end(); ++it) {
 		(*it)->Draw();
@@ -292,7 +302,11 @@ void World::Draw()
 
 const Camera* World::GetCurrentCamera() const
 {
-	return mCamera[mCurrentCamera];
+	return mCameras[mCurrentCamera];
+}
+
+const CameraType World::GetCurrentCameraType() const {
+	return CameraType(mCurrentCamera);
 }
 
 void World::InitializeModels() {
@@ -313,9 +327,9 @@ void World::InitializeModels() {
 	pointLight->SetQuadratic(0.0f);
 	mPointLights.push_back(pointLight);
 
-	car = new CarModel(vec3(0.0f, 0.75f, 0.0f));
-	car->SetColorFromVec3(gold);
-	car->GenerateModel();
+	playerCar = new PlayerControlledCarModel(vec3(0.0f, 0.75f, 0.0f));
+	playerCar->SetColorFromVec3(gold);
+	playerCar->GenerateModel();
 
 	grid = new GridModel(vec3(0.0f, 0.0f, 0.0f));
 	grid->GenerateModel();
@@ -351,4 +365,18 @@ void World::AddPointLight(PointLight* light) {
 
 void World::RemovePointLight(PointLight* light) {
 	mPointLights.erase(std::remove(mPointLights.begin(), mPointLights.end(), light), mPointLights.end());
+}
+
+void World::AddCamera(CameraType type, Camera* camera) {
+	if (type < mCameras.size()) {
+		mCameras[type] = camera;
+	}
+	else {
+		mCameras.push_back(camera);
+	}
+}
+
+void World::ToggleCamera() {
+	int modulo = mCameras.size();
+	mCurrentCamera = (mCurrentCamera + 1) % modulo;
 }

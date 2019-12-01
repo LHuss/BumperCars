@@ -15,6 +15,7 @@
 #include <list>
 
 #include "CarModel.h"
+#include "PlayerControlledCarModel.h"
 #include "GridModel.h"
 #include "Camera.h"
 #include "Model.h"
@@ -43,6 +44,7 @@ public:
 	void InitializeModels();
 
 	const Camera* GetCurrentCamera() const;
+	const CameraType GetCurrentCameraType() const;
 
 	static glm::mat4 GetInstancedViewProjectionMatrix();
 
@@ -51,16 +53,19 @@ public:
 	void AddPointLight(PointLight* light);
 	void RemovePointLight(PointLight* light);
 
+	void AddCamera(CameraType type, Camera* camera);
+	void ToggleCamera();
+
 private:
 	static World* instance;
 
-	CarModel* car;
+	PlayerControlledCarModel* playerCar;
 	GridModel* grid;
 	CubeModel* ground;
 	std::list<CarModel*> projectileCars;
 	std::vector<Model*> mobileModels;
 	std::vector<Model*> staticModels;
-	std::vector<Camera*> mCamera;
+	std::vector<Camera*> mCameras;
 	unsigned int mCurrentCamera;
 
 	std::vector<PointLight*> mPointLights;

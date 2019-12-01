@@ -35,15 +35,5 @@ void SpotLight::SetOuterCutOff(float outerCutOff) {
 }
 
 void SpotLight::UpdateFromModel() {
-	vec3 newPos = mLightModel->GetCenterPosition() + mLightModel->GetCenterShift();
-
-	mat4 centerT = translate(mat4(1.0f), mLightModel->GetCenterPosition());
-
-	mat4 rot = Model::ComputeRotationMatrix(mLightModel->GetRotation());
-
-	mat4 shift = translate(mat4(1.0f), mLightModel->GetCenterShift());
-	
-	mat4 translated = centerT * rot * shift;
-
-	mPosition = vec3(translated[3]);
+	mPosition = mLightModel->GetWorldMatrix()[3];
 }

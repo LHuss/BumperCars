@@ -1,20 +1,12 @@
-//
-// COMP 371 Assignment Framework
-//
-// Created by Nicolas Bergeron on 8/7/14.
-//
-// Copyright (c) 2014-2019 Concordia University. All rights reserved.
-//
-
 #pragma once
 
 #include "Camera.h"
 
-class FirstPersonCamera : public Camera
+class ThirdPersonCamera : public Camera
 {
 public:
-	FirstPersonCamera(glm::vec3 position);
-	virtual ~FirstPersonCamera();
+	ThirdPersonCamera(glm::vec3 position);
+	virtual ~ThirdPersonCamera();
 
 	virtual void Update(float dt);
 
@@ -31,6 +23,7 @@ public:
 	float GetVerticalAngle() const { return mVerticalAngle; }
 
 private:
+	float radius = 5.0f;
 	float mHorizontalAngle; // horizontal angle
 	float mVerticalAngle;   // vertical angle
 

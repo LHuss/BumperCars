@@ -12,7 +12,9 @@
 #include <glm/glm.hpp>
 
 enum CameraType {
+	CAMERA_FREE,
 	CAMERA_FIRST,
+	CAMERA_THIRD
 };
 
 class Camera
