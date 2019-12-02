@@ -20,6 +20,7 @@ public:
 
 	void SetCenterPosition(glm::vec3 position);
 	void SetCenterShift(glm::vec3 shift);
+	void SetSpotShift(glm::vec3 shift);
 	void SetShapeScale(glm::vec3 shape);
 	void SetSizeScale(glm::vec3 size);
 	void SetRotation(glm::vec3 rotation);
@@ -40,6 +41,7 @@ public:
 
 	glm::vec3 GetCenterPosition() const { return mCenterPosition; }
 	glm::vec3 GetCenterShift() const { return mCenterShift; }
+	glm::vec3 GetSpotShift() const { return mSpotShift; }
 	glm::vec3 GetSizeScale() const { return mSizeScale; }
 	glm::vec3 GetShapeScale() const { return mShapeScale; }
 	glm::vec3 GetRotation() const { return mRotation; }
@@ -59,6 +61,8 @@ protected:
 	glm::vec3 iCenterPosition;
 	glm::vec3 mCenterShift;
 	glm::vec3 iCenterShift;
+	glm::vec3 mSpotShift;
+	glm::vec3 iSpotShift;
 	glm::vec3 mSizeScale;
 	glm::vec3 iSizeScale;
 	glm::vec3 mShapeScale;

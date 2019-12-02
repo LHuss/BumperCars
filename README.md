@@ -1,11 +1,12 @@
-# A1-COMP371
- First assignment for COMP 371 - Computer Graphics.
+# COMP 371 Project
+ Project for COMP 371 - Computer Graphics.
 
 ## Commands
 | Commands   | What do?  | Multiple? | States |
 |---|---|---|---|
 | WA  | Move car forwards/backwards  | x | - |
 | SD | Turn car wheels. Will affect WA movement | x | - |
+| LShift | Move car FAST | x | - |
 | Arrow Keys | Move Camera | x | - |
 | UJ  | Scale up/down  | x | - |
 | TLP  | Draw modes (Triangle, line, point)  | x | - |
@@ -21,3 +22,7 @@
 | \` | Changes window size/resolution | O | 1024x768 - 1280x1024 - 1920x1080 |
 | X | Change textures used | O | Textures + Colors - Textures + texture colros - No Textures |
 | B | Change Lighting | O | Untextured + Lighting - Textured + Lighting - No Lighting |
+| C | Toggle Camera | O | Free roam - 1st person - 3rd person |
+| L | Toggle Lights | X | - |
+| 9 | Toggle Hitboxes | X | - |
+| H | Toggle "Animation" | X | - |

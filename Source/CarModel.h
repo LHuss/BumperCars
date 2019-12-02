@@ -33,12 +33,17 @@ public:
 	void ShowCollisionBox();
 	void HideCollisionBox();
 	void ToggleCollisionBox();
+	void EnableAnimation();
+	void DisableAnimation();
+	void ToggleAnimation();
 	
 	glm::vec3 GetDirection();
 	glm::vec3 GetDirection(glm::vec3 rotation);
 	glm::vec3 GetLightDirection();
 
 	CollisionModel* GetCollisionBox() const { return collisionBox; }
+
+	void InterpollateAnimationSpot(float dt);
 
 protected:
 	CubeModel *body;
@@ -61,4 +66,9 @@ protected:
 	float mWheelSpin;
 	float mMovementDirection;
 	bool mIsMoving;
+
+	bool mAnimationEnabled;
+	glm::vec3 mAnimationSpotPoint;
+	glm::vec3 mAnimationPoints[4];
+	int mCurAnimationPoint;
 };

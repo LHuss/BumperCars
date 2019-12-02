@@ -67,6 +67,9 @@
     <Image Include="..\Assets\Textures\tire.jpg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="..\Assets\Textures\smokeparticle.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\CubeModel.cpp">

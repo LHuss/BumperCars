@@ -31,6 +31,14 @@ CarModel::CarModel(
 	mWheelAngle = wheelAngle;
 	mWheelSpin = wheelSpin;
 	mMovementDirection = 0.0f;
+	mAnimationEnabled = true;
+	mAnimationSpotPoint = vec3(0.0f, 0.0f, 0.0f);
+
+	mCurAnimationPoint = -1;
+	mAnimationPoints[0] = vec3(0.0f, -1.0f, 0.0f) * 0.1f;
+	mAnimationPoints[1] = vec3(0.0f, 0.0f, 1.0f) * 0.1f;
+	mAnimationPoints[2] = vec3(0.0f, 1.0f, 0.0f) * 0.1f;
+	mAnimationPoints[3] = vec3(0.0f, 0.0f, -1.0f) * 0.1f;
 }
 
 
@@ -234,11 +242,19 @@ void CarModel::Update(float dt) {
 	vec3 wheelTurn = vec3(0.0f, 1.0f, 0.0f) * mWheelAngle;
 	vec3 frontWheelRotation = wheelTurn + wheelSpin;
 
+	if (mAnimationEnabled) {
+		InterpollateAnimationSpot(dt);
+	}
+	else {
+		mSpotShift = vec3(0.0f, 0.0f, 0.0f);
+	}
+
 	mCenterPosition += mVelocity * dt;
 	for(std::vector<Model*>::iterator it = cModels.begin(); it < cModels.end(); ++it)
 	{
 		(*it)->Update(dt);
 		(*it)->SetCenterPosition(mCenterPosition);
+		(*it)->SetSpotShift(mSpotShift);
 		(*it)->SetRotation(mRotation);
 		(*it)->SetDrawMode(mDrawMode);
 		(*it)->SetSizeScale(mSizeScale);
@@ -354,4 +370,57 @@ void CarModel::HideCollisionBox() {
 
 void CarModel::ToggleCollisionBox() {
 	collisionBox->Toggle();
+}
+
+void CarModel::EnableAnimation() {
+	mAnimationEnabled = true;
+}
+
+void CarModel::DisableAnimation() {
+	mAnimationEnabled = false;
+}
+
+void CarModel::ToggleAnimation() {
+	mAnimationEnabled = !mAnimationEnabled;
+}
+
+void CarModel::InterpollateAnimationSpot(float dt) {
+	float animationSpeed = dt / 5;
+	vec3 currentPoint = mAnimationSpotPoint;
+	int nextGoal = (mCurAnimationPoint + 1) % (sizeof(mAnimationPoints) / sizeof(*mAnimationPoints));
+	vec3 nextPoint = mAnimationPoints[nextGoal];
+
+	float dy = nextPoint.y - currentPoint.y;
+	float dz = nextPoint.z - currentPoint.z;
+
+	// hypotenuse
+	float mag = sqrt(dy * dy + dz * dz);
+
+	// to unit length
+	dy /= mag;
+	dz /= mag;
+
+	float newy = ((float)currentPoint.y + dy * animationSpeed);
+	if (dy < 0) {
+		newy = max(nextPoint.y, newy);
+	}
+	else {
+		newy = min(nextPoint.y, newy);
+	}
+	float newz = ((float)currentPoint.z + dz * animationSpeed);
+	if (dz < 0) {
+		newz = max(nextPoint.z, newz);
+	}
+	else {
+		newz = min(nextPoint.z, newz);
+	}
+
+	vec3 newPoint = vec3(mAnimationSpotPoint.x, newy, newz);
+	if (newPoint == nextPoint) {
+		mCurAnimationPoint = nextGoal;
+		fprintf(stderr, "What in the fuck lol\n");
+
+	}
+	mAnimationSpotPoint = newPoint;
+	mSpotShift = newPoint;
 }

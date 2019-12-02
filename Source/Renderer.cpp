@@ -129,6 +129,10 @@ void Renderer::Initialize()
 		LoadTexture(texturePathPrefix + "wood.png")
 	);
 
+	sTextureID.push_back(
+		LoadTexture(texturePathPrefix + "smokeparticle.png")
+	);
+
 }
 
 void Renderer::Shutdown()

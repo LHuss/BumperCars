@@ -18,6 +18,7 @@ using namespace glm;
 Model::Model() :
 	mCenterPosition(0.0f, 0.0f, 0.0f), iCenterPosition(mCenterPosition),
 	mCenterShift(1.0f, 1.0f, 1.0f), iCenterShift(mCenterShift),
+	mSpotShift(0.0f, 0.0f, 0.0f), iSpotShift(mSpotShift),
 	mSizeScale(1.0f, 1.0f, 1.0f), iSizeScale(mSizeScale),
 	mShapeScale(1.0f, 1.0f, 1.0f), iShapeScale(mShapeScale),
 	mRotation(0.0f, 0.0f, 0.0f), iRotation(mRotation),
@@ -53,9 +54,11 @@ glm::mat4 Model::GetWorldMatrix() const {
 
 	mat4 shapeS = scale(mat4(1.0f), mShapeScale);
 
+	mat4 spotT = translate(mat4(1.0f), mSpotShift);
+
 	mat4 pointRot = ComputeRotationMatrix(mPointRotation);
 
-	worldMatrix = worldMatrix * centerT * sizeS * rot * shift * shapeS * pointRot;
+	worldMatrix = worldMatrix * centerT * sizeS * rot * shift * spotT * shapeS * pointRot;
 
 	return worldMatrix;
 }
@@ -73,6 +76,10 @@ void Model::SetCenterPosition(glm::vec3 position) {
 
 void Model::SetCenterShift(glm::vec3 shift) {
 	mCenterShift = shift;
+}
+
+void Model::SetSpotShift(glm::vec3 shift) {
+	mSpotShift = shift;
 }
 
 void Model::SetShapeScale(glm::vec3 shape) {

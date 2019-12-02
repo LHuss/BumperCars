@@ -115,6 +115,7 @@
     <Image Include="..\..\Lab04\Assets\Textures\brick.jpg" />
     <Image Include="..\..\Lab04\Assets\Textures\cement.jpg" />
     <Image Include="..\Assets\Textures\grass.bmp" />
+    <Image Include="..\Assets\Textures\smokeparticle.png" />
     <Image Include="..\Assets\Textures\steel.jpg" />
     <Image Include="..\Assets\Textures\tire.jpg" />
     <Image Include="..\Assets\Textures\wood.png" />

@@ -110,6 +110,13 @@ void World::Update(float dt)
 		}
 	}
 
+	// H - Toggle "animation"
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_H)) {
+		for (auto it : cars) {
+			it->ToggleAnimation();
+		}
+	}
+
 	// Update current Camera
 	if (mCurrentCamera == CameraType::CAMERA_FREE) {
 		mCameras[mCurrentCamera]->Update(dt);
@@ -122,9 +129,14 @@ void World::Update(float dt)
 	}
 
 	// Car Updates
-	
-	// W, A, S, D - Directional Movement
+
 	float carSpeed = 5.0f;
+	// Shift - GOTTA GO FAST NIOOOM
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
+		carSpeed = 15.0f;
+	}
+
+	// W, A, S, D - Directional Movement
 	float carMovement = carSpeed * dt;
 	float distanceShift = 0.0f;
 	bool isMoving = false;
@@ -246,13 +258,6 @@ void World::Update(float dt)
 		carRotation -= vec3(0.0f, 0.0f, 1.0f) * angleStepSize;
 	}
 
-	// F, H - Rotate car along z-axis
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-		carRotation += vec3(1.0f, 0.0f, 0.0f) * angleStepSize;
-	}
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		carRotation -= vec3(1.0f, 0.0f, 0.0f) * angleStepSize;
-	}
 	playerCar->SetRotation(carRotation);
 	
 	playerCar->Update(dt);
