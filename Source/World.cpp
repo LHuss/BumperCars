@@ -431,12 +431,14 @@ void World::DoCollisions() {
 		CarModel* car0 = cars[i];
 		for (int j = 0; j < cars.size(); ++j){
 			if (j <= i) continue;
+
 			CarModel* car1 = cars[j];
+			if (!car0->GetCollisionBox()->IsMovable() && !car1->GetCollisionBox()->IsMovable()) continue;
 
 			Collision col = CheckCollision(*car0->GetCollisionBox(), *car1->GetCollisionBox());
 			if (col.collided) {
 				int move = rand() % 2;
-				if (move == 0) {
+				if (move == 0 && car0->GetCollisionBox()->IsMovable()) {
 					vec3 pos = car0->GetCenterPosition();
 					pos += col.distance * vec3(1.0f, 0.0f, 1.0f);
 					car0->SetCenterPosition(pos);
