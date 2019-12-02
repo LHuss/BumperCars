@@ -123,6 +123,8 @@
     <ClCompile Include="..\Source\AxisModel.cpp" />
     <ClCompile Include="..\Source\Camera.cpp" />
     <ClCompile Include="..\Source\CarModel.cpp" />
+    <ClCompile Include="..\Source\CollisionModel.cpp" />
+    <ClCompile Include="..\Source\ComputerControlledCarModel.cpp" />
     <ClCompile Include="..\Source\CubeModel.cpp" />
     <ClCompile Include="..\Source\CylinderModel.cpp" />
     <ClCompile Include="..\Source\EventManager.cpp" />
@@ -142,6 +144,8 @@
     <ClInclude Include="..\Source\AxisModel.h" />
     <ClInclude Include="..\Source\Camera.h" />
     <ClInclude Include="..\Source\CarModel.h" />
+    <ClInclude Include="..\Source\CollisionModel.h" />
+    <ClInclude Include="..\Source\ComputerControlledCarModel.h" />
     <ClInclude Include="..\Source\CubeModel.h" />
     <ClInclude Include="..\Source\CylinderModel.h" />
     <ClInclude Include="..\Source\EventManager.h" />

@@ -17,6 +17,10 @@ Light::Light(vec3 color, vec3 ambient, vec3 diffuse, vec3 specular) :
 Light::~Light() {
 }
 
+void Light::Toggle() {
+	mActive = !mActive;
+}
+
 void Light::Enable() {
 	mActive = true;
 }

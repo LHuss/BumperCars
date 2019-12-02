@@ -14,6 +14,8 @@ CubeModel::CubeModel(
 	mShapeScale = shapeScale;
 	mRotation = rotation;
 	mColor = color;
+	mMax = vec3(0.5, 0.5f, 0.5f);
+	mMin = vec3(-0.5f, -0.5f, -0.5f);
 }
 
 CubeModel::~CubeModel() {
@@ -26,53 +28,53 @@ void CubeModel::GenerateModel() {
 	float upperBound = 0.5f;
 
 	Vertex vertexBuffer[] = {  // position,									normal,						color,  aUV,				ambient		specular
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f)	 }, // left
-								{ vec3(lowerBound,lowerBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
-								{ vec3(lowerBound, upperBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f)	 }, // left
+								{ vec3(mMin.x, mMin.y, mMax.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMin.x, mMax.y, mMax.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
-								{ vec3(lowerBound, upperBound, upperBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
-								{ vec3(lowerBound, upperBound,lowerBound),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMin.x, mMax.y, mMax.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMin.x, mMax.y, mMin.z),	vec3(-1.0f, 0.0f, 0.0f),	mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) }, // far
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMax.x, mMax.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) }, // far
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMin.x, mMax.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(upperBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMax.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMax.x, mMin.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(0.0f, 0.0f,-1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // bottom
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(upperBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMax.x, mMin.y, mMax.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // bottom
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMin.y, mMin.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(lowerBound,lowerBound, upperBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(.0f, 1.0f) },
-								{ vec3(lowerBound,lowerBound,lowerBound),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMin.y, mMax.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMin.x, mMin.y, mMax.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(.0f, 1.0f) },
+								{ vec3(mMin.x, mMin.y, mMin.z),	vec3(0.0f,-1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) }, // near
-								{ vec3(lowerBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMin.x, mMax.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) }, // near
+								{ vec3(mMin.x, mMin.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMax.x, mMin.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(upperBound,lowerBound, upperBound),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMax.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMin.x, mMax.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMax.x, mMin.y, mMax.z),	vec3(0.0f, 0.0f, 1.0f),		mColor, vec2(0.0f, 0.0f) },
 
-								{ vec3(upperBound, upperBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // right
-								{ vec3(upperBound,lowerBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(upperBound, upperBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMax.x, mMax.y, mMax.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) }, // right
+								{ vec3(mMax.x, mMin.y, mMin.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMax.y, mMin.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
 
-								{ vec3(upperBound,lowerBound,lowerBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
-								{ vec3(upperBound, upperBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
-								{ vec3(upperBound,lowerBound, upperBound),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMax.x, mMin.y, mMin.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) },
+								{ vec3(mMax.x, mMax.y, mMax.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMax.x, mMin.y, mMax.z),	vec3(1.0f, 0.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
 
-								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }, //top
-								{ vec3(upperBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
+								{ vec3(mMax.x, mMax.y, mMax.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }, //top
+								{ vec3(mMax.x, mMax.y, mMin.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMin.x, mMax.y, mMin.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 1.0f) },
 
-								{ vec3(upperBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
-								{ vec3(lowerBound, upperBound,lowerBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
-								{ vec3(lowerBound, upperBound, upperBound),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }
+								{ vec3(mMax.x, mMax.y, mMax.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(1.0f, 0.0f) },
+								{ vec3(mMin.x, mMax.y, mMin.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 1.0f) },
+								{ vec3(mMin.x, mMax.y, mMax.z),	vec3(0.0f, 1.0f, 0.0f),		mColor, vec2(0.0f, 0.0f) }
 	};
 
 	// Create a vertex array
@@ -160,4 +162,11 @@ void CubeModel::Draw()
 	glDrawArrays(mDrawMode, 0, 36);
 
 	Renderer::SwapAndUseShader(programShader);
+}
+
+void CubeModel::SetMaxes(
+	vec3 max, vec3 min
+) {
+	mMax = max;
+	mMin = min;
 }

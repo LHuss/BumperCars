@@ -4,6 +4,7 @@
 #include "CubeModel.h"
 #include "CylinderModel.h"
 #include "SpotLight.h"
+#include "CollisionModel.h"
 
 class CarModel : public Model {
 public:
@@ -26,12 +27,18 @@ public:
 	void SetVelocity(glm::vec3 velocity);
 
 	void Reset();
+	void DisableLights();
+	void EnableLights();
+	void ToggleLights();
+	void ShowCollisionBox();
+	void HideCollisionBox();
+	void ToggleCollisionBox();
 	
-	void UpdateWheels(float dt);
-
 	glm::vec3 GetDirection();
 	glm::vec3 GetDirection(glm::vec3 rotation);
 	glm::vec3 GetLightDirection();
+
+	CollisionModel* GetCollisionBox() const { return collisionBox; }
 
 protected:
 	CubeModel *body;
@@ -44,6 +51,7 @@ protected:
 	SpotLight* headLights[2];
 	SpotLight* tailLights[2];
 	SpotLight* lights[4];
+	CollisionModel* collisionBox;
 
 	std::vector<Model*> cModels;
 

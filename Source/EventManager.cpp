@@ -19,7 +19,7 @@ double EventManager::sLastFrameTime = glfwGetTime();
 float  EventManager::sFrameTime = 0.0f;
 
 // Key Delays
-const float EventManager::sMinKeyWait = 0.250f;
+const float EventManager::sMinKeyWait = 0.500f;
 map<int, float> EventManager::sKeyMap;
 
 // Resolutions

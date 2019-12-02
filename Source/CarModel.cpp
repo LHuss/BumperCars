@@ -56,6 +56,7 @@ void CarModel::GenerateModel() {
 	vec3 darkSlateGray = ComputeColorFromRGB(47, 79, 79);
 	vec3 silver = ComputeColorFromRGB(192, 192, 192);
 	vec3 gold = ComputeColorFromRGB(255, 215, 0);
+	vec3 brown = ComputeColorFromRGB(165, 42, 42);
 	vec3 white = ComputeColorFromRGB(255, 255, 255);
 	vec3 orange = ComputeColorFromRGB(255, 140, 0);
 
@@ -64,7 +65,7 @@ void CarModel::GenerateModel() {
 	body = new CubeModel(
 		mCenterPosition, bodyShift,
 		mSizeScale, bodyShape,
-		mRotation, darkSlateGray
+		mRotation, mColor
 	);
 	body->SetTexture(TextureType::TEXTURE_STEEL);
 	body->GenerateModel();
@@ -86,7 +87,7 @@ void CarModel::GenerateModel() {
 	bonnet = new CubeModel(
 		mCenterPosition, bonnetShift,
 		mSizeScale, bonnetShape,
-		mRotation, mColor
+		mRotation, brown
 	);
 	bonnet->SetTexture(TextureType::TEXTURE_STEEL);
 	bonnet->GenerateModel();
@@ -107,9 +108,9 @@ void CarModel::GenerateModel() {
 	float xPos[] = { 0.6f, -0.6f };
 	float zPos[] = { -0.5f, 0.5f };
 	int pos = 0;
+	vec3 wheelShape = vec3(0.5f, 0.5f, 0.25f) * mShapeScale;
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
-			vec3 wheelShape = vec3(0.5f, 0.5f, 0.25f) * mShapeScale;
 			vec3 wheelShift = vec3(xPos[i], -(bodyShape.y / 2.0f), zPos[j]);
 			wheels[pos] = new CylinderModel(
 				mCenterPosition, wheelShift,
@@ -135,6 +136,7 @@ void CarModel::GenerateModel() {
 	float xPosLight[] = { (bodyShape.x / 2.0f + bonnetShape.x), -(bodyShape.x / 2.0f + trunkShape.x) };
 	float zPosLight[] = { 0.4f, -0.4f };
 	pos = 0;
+	vec3 lightShape = vec3(0.1f, 0.1f, 0.1f) * mShapeScale;
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++) {
 			vec3 color = white;
@@ -142,8 +144,6 @@ void CarModel::GenerateModel() {
 				color = orange;
 			}
 
-
-			vec3 lightShape = vec3(0.1f, 0.1f, 0.1f) * mShapeScale;
 			vec3 lightShift = vec3(xPosLight[i], 0.0f, zPosLight[j]);
 			if (i == 0) {
 				lightShift.y = bonnetShift.y;
@@ -166,6 +166,7 @@ void CarModel::GenerateModel() {
 			SpotLight* light = new SpotLight(lightShift, direction, color);
 			light->SetLightModel(lightCube);
 			light->GetLightModel()->GenerateModel();
+			light->Disable();
 			World::GetInstance()->AddSpotLight(light);
 
 			cModels.push_back(light->GetLightModel());
@@ -180,6 +181,20 @@ void CarModel::GenerateModel() {
 			pos++;
 		}
 	}
+
+	float topY = bodyShape.y / 2.0f + roofShape.y;
+	float botY = bodyShape.y / 2.0f + wheelShape.y / 2.0f;
+	float maxY = max(topY, botY);
+
+	float frontX = bodyShape.x / 2.0f + bonnetShape.x;
+	float backX = bodyShape.x / 2.0f + trunkShape.x;
+	float maxX = max(frontX, backX);
+
+	float frontZ = bodyShape.z / 2.0f + wheelShape.z / 2.0f;
+	float backZ = bodyShape.z / 2.0f + wheelShape.z / 2.0f;
+	float maxZ = max(frontZ, backZ);
+
+	collisionBox = new CollisionModel(mCenterPosition, mRotation, maxX, maxY, maxZ);
 }
 
 void CarModel::Reset() {
@@ -251,6 +266,8 @@ void CarModel::Update(float dt) {
 	for (auto it : tailLights) {
 		it->SetDirection(-dir);
 	}
+
+	collisionBox->SetCenterPosition(mCenterPosition);
 }
 
 void CarModel::Draw() {
@@ -262,6 +279,8 @@ void CarModel::Draw() {
 	{
 		(*it)->Draw();
 	}
+
+	collisionBox->Draw();
 }
 
 void CarModel::Shift(float direction) {
@@ -272,8 +291,6 @@ void CarModel::Shift(float direction) {
 	vec3 distance = GetDirection() * direction;
 	vec4 distanceShift = vec4(distance.x, distance.y, distance.z, 0)
 		* ComputeRotationMatrix(mRotation);
-
-	vec3 dor = GetDirection();
 	
 	if (mRotation.y <= 90.0f || mRotation.y > 270.0f) {
 		distance.y = -distance.y;
@@ -307,4 +324,34 @@ vec3 CarModel::GetDirection(vec3 rotation) {
 vec3 CarModel::GetLightDirection() {
 	vec3 rotation = mRotation * vec3(1.0f, -1.0f, 1.0f);
 	return GetDirection(rotation);
+}
+
+void CarModel::DisableLights() {
+	for (auto it : lights) {
+		it->Disable();
+	}
+}
+
+void CarModel::EnableLights() {
+	for (auto it : lights) {
+		it->Enable();
+	}
+}
+
+void CarModel::ToggleLights() {
+	for (auto it : lights) {
+		it->Toggle();
+	}
+}
+
+void CarModel::ShowCollisionBox() {
+	collisionBox->Show();
+}
+
+void CarModel::HideCollisionBox() {
+	collisionBox->Hide();
+}
+
+void CarModel::ToggleCollisionBox() {
+	collisionBox->Toggle();
 }

@@ -15,7 +15,12 @@ public:
 	virtual void Draw();
 	virtual void GenerateModel();
 
-private:
+	void SetMaxes(
+		glm::vec3 mMax,
+		glm::vec3 mMin
+	);
+
+protected:
 	struct Vertex {
 		glm::vec3 position;
 		glm::vec3 normal;
@@ -23,6 +28,9 @@ private:
 		glm::vec2 aUV;
 	//	float 
 	};
+
+	glm::vec3 mMax;
+	glm::vec3 mMin;
 
 	unsigned int mVertexArray;
 	unsigned int mVertexBuffer;

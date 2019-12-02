@@ -14,17 +14,24 @@
 #include <vector>
 #include <list>
 
-#include "CarModel.h"
+#include "ComputerControlledCarModel.h"
 #include "PlayerControlledCarModel.h"
+#include "CarModel.h"
 #include "GridModel.h"
 #include "Camera.h"
 #include "Model.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "CollisionModel.h"
 
 struct LightSource {
 	glm::vec3 position;
 	glm::vec3 color;
+};
+
+struct Collision {
+	bool collided;
+	glm::vec3 distance;
 };
 
 class World
@@ -56,10 +63,15 @@ public:
 	void AddCamera(CameraType type, Camera* camera);
 	void ToggleCamera();
 
+	void DoCollisions();
+	Collision CheckCollision(CollisionModel& one, CollisionModel& two);
+
 private:
 	static World* instance;
 
 	PlayerControlledCarModel* playerCar;
+	std::vector<ComputerControlledCarModel*> compCars;
+	std::vector<CarModel*> cars;
 	GridModel* grid;
 	CubeModel* ground;
 	std::list<CarModel*> projectileCars;

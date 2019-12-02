@@ -198,105 +198,111 @@ void Renderer::BindUniforms() {
 
 	vector<PointLight*> pointLights = World::GetInstance()->GetPointLights();
 	int numPointLights = 0;
-	for (vector<PointLight*>::iterator it = pointLights.begin(); it < pointLights.end(); ++it, ++numPointLights) {
+	for (vector<PointLight*>::iterator it = pointLights.begin(); it < pointLights.end(); ++it) {
 		PointLight* light = *it;
-		string lightLocS = string("pointLights[") + to_string(numPointLights) + "]";
+		if (light->IsActive()) {
+			string lightLocS = string("pointLights[") + to_string(numPointLights) + "]";
 
-		char* lightPosL = ToCharArray((lightLocS + ".position"));
-		GLuint lightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), lightPosL);
-		glm::vec3 lightPos = light->GetPosition();
-		glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
+			char* lightPosL = ToCharArray((lightLocS + ".position"));
+			GLuint lightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), lightPosL);
+			glm::vec3 lightPos = light->GetPosition();
+			glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
 
-		char* lightColL = ToCharArray((lightLocS + ".color"));
-		GLuint lightColorLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightColL);
-		glm::vec3 lightCol = light->GetColor();
-		glUniform3f(lightColorLoc, lightCol.x, lightCol.y, lightCol.z);
+			char* lightColL = ToCharArray((lightLocS + ".color"));
+			GLuint lightColorLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightColL);
+			glm::vec3 lightCol = light->GetColor();
+			glUniform3f(lightColorLoc, lightCol.x, lightCol.y, lightCol.z);
 
-		char* lightAmbL = ToCharArray((lightLocS + ".ambient"));
-		GLuint lightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightAmbL);
-		glm::vec3 lightAmb = light->GetAmbient();
-		char* lightDiffL = ToCharArray((lightLocS + ".diffuse"));
-		glUniform3f(lightAmbientLoc, lightAmb.x, lightAmb.y, lightAmb.z);
-		GLuint lightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDiffL);
-		glm::vec3 lightDiff = light->GetDiffuse();
-		char* lightSpecL = ToCharArray((lightLocS + ".specular"));
-		glUniform3f(lightDiffuseLoc, lightDiff.x, lightDiff.y, lightDiff.z);
-		GLuint lightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightSpecL);
-		glm::vec3 lightSpec = light->GetSpecular();
-		glUniform3f(lightSpecularLoc, lightSpec.x, lightSpec.y, lightSpec.z);
+			char* lightAmbL = ToCharArray((lightLocS + ".ambient"));
+			GLuint lightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightAmbL);
+			glm::vec3 lightAmb = light->GetAmbient();
+			char* lightDiffL = ToCharArray((lightLocS + ".diffuse"));
+			glUniform3f(lightAmbientLoc, lightAmb.x, lightAmb.y, lightAmb.z);
+			GLuint lightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDiffL);
+			glm::vec3 lightDiff = light->GetDiffuse();
+			char* lightSpecL = ToCharArray((lightLocS + ".specular"));
+			glUniform3f(lightDiffuseLoc, lightDiff.x, lightDiff.y, lightDiff.z);
+			GLuint lightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightSpecL);
+			glm::vec3 lightSpec = light->GetSpecular();
+			glUniform3f(lightSpecularLoc, lightSpec.x, lightSpec.y, lightSpec.z);
 
-		char* lightConstL = ToCharArray((lightLocS + ".constant"));
-		GLuint lightConstantLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightConstL);
-		float lightConst = light->GetConstant();
-		glUniform1f(lightConstantLoc, lightConst);
-		char* lightLinearL = ToCharArray((lightLocS + ".linear"));
-		GLuint lightLinearLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightLinearL);
-		float lightLinear = light->GetLinear();
-		glUniform1f(lightLinearLoc, lightLinear);
-		char* lightQuadL = ToCharArray((lightLocS + ".quadratic"));
-		GLuint lightQuadraticLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightQuadL);
-		float lightQuad = light->GetQuadratic();
-		glUniform1f(lightQuadraticLoc, lightQuad);
+			char* lightConstL = ToCharArray((lightLocS + ".constant"));
+			GLuint lightConstantLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightConstL);
+			float lightConst = light->GetConstant();
+			glUniform1f(lightConstantLoc, lightConst);
+			char* lightLinearL = ToCharArray((lightLocS + ".linear"));
+			GLuint lightLinearLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightLinearL);
+			float lightLinear = light->GetLinear();
+			glUniform1f(lightLinearLoc, lightLinear);
+			char* lightQuadL = ToCharArray((lightLocS + ".quadratic"));
+			GLuint lightQuadraticLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightQuadL);
+			float lightQuad = light->GetQuadratic();
+			glUniform1f(lightQuadraticLoc, lightQuad);
+			++numPointLights;
+		}
 	}
 	GLuint numPointLightsLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "numPointLights");
 	glUniform1i(numPointLightsLoc, numPointLights);
 
 	vector<SpotLight*> spotLights = World::GetInstance()->GetSpotLights();
 	int numSpotLights = 0;
-	for (vector<SpotLight*>::iterator it = spotLights.begin(); it < spotLights.end(); ++it, ++numSpotLights) {
+	for (vector<SpotLight*>::iterator it = spotLights.begin(); it < spotLights.end(); ++it) {
 		SpotLight* light = *it;
-		string lightLocS = string("spotLights[") + to_string(numSpotLights) + "]";
+		if (light->IsActive()) {
+			string lightLocS = string("spotLights[") + to_string(numSpotLights) + "]";
 
-		char* lightPosL = ToCharArray((lightLocS + ".position"));
-		GLuint lightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), lightPosL);
-		glm::vec3 lightPos = light->GetPosition();
-		glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
+			char* lightPosL = ToCharArray((lightLocS + ".position"));
+			GLuint lightPosLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), lightPosL);
+			glm::vec3 lightPos = light->GetPosition();
+			glUniform3f(lightPosLocation, lightPos.x, lightPos.y, lightPos.z);
 
-		char* lightColL = ToCharArray((lightLocS + ".color"));
-		GLuint lightColorLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightColL);
-		glm::vec3 lightCol = light->GetColor();
-		glUniform3f(lightColorLoc, lightCol.x, lightCol.y, lightCol.z);
+			char* lightColL = ToCharArray((lightLocS + ".color"));
+			GLuint lightColorLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightColL);
+			glm::vec3 lightCol = light->GetColor();
+			glUniform3f(lightColorLoc, lightCol.x, lightCol.y, lightCol.z);
 
-		char* lightDirL = ToCharArray((lightLocS + ".direction"));
-		GLuint lightDirLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDirL);
-		glm::vec3 lightDir = light->GetDirection();
-		glUniform3f(lightDirLoc, lightDir.x, lightDir.y, lightDir.z);
+			char* lightDirL = ToCharArray((lightLocS + ".direction"));
+			GLuint lightDirLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDirL);
+			glm::vec3 lightDir = light->GetDirection();
+			glUniform3f(lightDirLoc, lightDir.x, lightDir.y, lightDir.z);
 
-		char* lightCOL = ToCharArray((lightLocS + ".cutOff"));
-		GLuint lightCOLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightCOL);
-		float lightCO = light->GetCutOff();
-		glUniform1f(lightCOLoc, lightCO);
-		char* lightOCOL = ToCharArray((lightLocS + ".outerCutOff"));
-		GLuint lightOCOLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightOCOL);
-		float lightOCO = light->GetCutOff();
-		glUniform1f(lightOCOLoc, lightOCO);
+			char* lightCOL = ToCharArray((lightLocS + ".cutOff"));
+			GLuint lightCOLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightCOL);
+			float lightCO = light->GetCutOff();
+			glUniform1f(lightCOLoc, lightCO);
+			char* lightOCOL = ToCharArray((lightLocS + ".outerCutOff"));
+			GLuint lightOCOLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightOCOL);
+			float lightOCO = light->GetCutOff();
+			glUniform1f(lightOCOLoc, lightOCO);
 
 
-		char* lightAmbL = ToCharArray((lightLocS + ".ambient"));
-		GLuint lightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightAmbL);
-		glm::vec3 lightAmb = light->GetAmbient();
-		char* lightDiffL = ToCharArray((lightLocS + ".diffuse"));
-		glUniform3f(lightAmbientLoc, lightAmb.x, lightAmb.y, lightAmb.z);
-		GLuint lightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDiffL);
-		glm::vec3 lightDiff = light->GetDiffuse();
-		char* lightSpecL = ToCharArray((lightLocS + ".specular"));
-		glUniform3f(lightDiffuseLoc, lightDiff.x, lightDiff.y, lightDiff.z);
-		GLuint lightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightSpecL);
-		glm::vec3 lightSpec = light->GetSpecular();
-		glUniform3f(lightSpecularLoc, lightSpec.x, lightSpec.y, lightSpec.z);
+			char* lightAmbL = ToCharArray((lightLocS + ".ambient"));
+			GLuint lightAmbientLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightAmbL);
+			glm::vec3 lightAmb = light->GetAmbient();
+			char* lightDiffL = ToCharArray((lightLocS + ".diffuse"));
+			glUniform3f(lightAmbientLoc, lightAmb.x, lightAmb.y, lightAmb.z);
+			GLuint lightDiffuseLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightDiffL);
+			glm::vec3 lightDiff = light->GetDiffuse();
+			char* lightSpecL = ToCharArray((lightLocS + ".specular"));
+			glUniform3f(lightDiffuseLoc, lightDiff.x, lightDiff.y, lightDiff.z);
+			GLuint lightSpecularLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightSpecL);
+			glm::vec3 lightSpec = light->GetSpecular();
+			glUniform3f(lightSpecularLoc, lightSpec.x, lightSpec.y, lightSpec.z);
 
-		char* lightConstL = ToCharArray((lightLocS + ".constant"));
-		GLuint lightConstantLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightConstL);
-		float lightConst = light->GetConstant();
-		glUniform1f(lightConstantLoc, lightConst);
-		char* lightLinearL = ToCharArray((lightLocS + ".linear"));
-		GLuint lightLinearLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightLinearL);
-		float lightLinear = light->GetLinear();
-		glUniform1f(lightLinearLoc, lightLinear);
-		char* lightQuadL = ToCharArray((lightLocS + ".quadratic"));
-		GLuint lightQuadraticLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightQuadL);
-		float lightQuad = light->GetQuadratic();
-		glUniform1f(lightQuadraticLoc, lightQuad);
+			char* lightConstL = ToCharArray((lightLocS + ".constant"));
+			GLuint lightConstantLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightConstL);
+			float lightConst = light->GetConstant();
+			glUniform1f(lightConstantLoc, lightConst);
+			char* lightLinearL = ToCharArray((lightLocS + ".linear"));
+			GLuint lightLinearLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightLinearL);
+			float lightLinear = light->GetLinear();
+			glUniform1f(lightLinearLoc, lightLinear);
+			char* lightQuadL = ToCharArray((lightLocS + ".quadratic"));
+			GLuint lightQuadraticLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), lightQuadL);
+			float lightQuad = light->GetQuadratic();
+			glUniform1f(lightQuadraticLoc, lightQuad);
+			++numSpotLights;
+		}
 	}
 	GLuint numSpotLightsLoc = glGetUniformLocation(Renderer::GetShaderProgramID(), "numSpotLights");
 	glUniform1i(numSpotLightsLoc, numSpotLights);

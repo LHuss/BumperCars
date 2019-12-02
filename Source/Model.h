@@ -36,6 +36,7 @@ public:
 
 	void Show();
 	void Hide();
+	void Toggle();
 
 	glm::vec3 GetCenterPosition() const { return mCenterPosition; }
 	glm::vec3 GetCenterShift() const { return mCenterShift; }

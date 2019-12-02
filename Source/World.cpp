@@ -12,9 +12,10 @@
 
 #include "FirstPersonCamera.h"
 #include "CubeModel.h"
-#include "CarModel.h"
+#include "ComputerControlledCarModel.h"
 #include "PlayerControlledCarModel.h"
 #include "CylinderModel.h"
+#include "CollisionModel.h"
 #include "GridModel.h"
 #include "AxisModel.h"
 #include "EventManager.h"
@@ -95,6 +96,20 @@ void World::Update(float dt)
 		ToggleCamera();
 	}
 
+	// Toggle Lights
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_L)) {
+		for (auto it : cars) {
+			it->ToggleLights();
+		}
+	}
+
+	// Show hitboxes
+	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_9)) {
+		for (auto it : cars) {
+			it->ToggleCollisionBox();
+		}
+	}
+
 	// Update current Camera
 	if (mCurrentCamera == CameraType::CAMERA_FREE) {
 		mCameras[mCurrentCamera]->Update(dt);
@@ -150,7 +165,9 @@ void World::Update(float dt)
 
 	// HOME - Reset car
 	if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_HOME)) {
-		playerCar->Reset();
+		for (auto it : cars) {
+			it->Reset();
+		}
 	}
 
 	// X - Toggle between SolidColor and Textured shaders
@@ -252,8 +269,9 @@ void World::Update(float dt)
 		projCar->SetCenterPosition(pos);
 		projCar->SetVelocity(lookAt * projectileSpeed);
 		projCar->SetSizeScale(sizeScale);
-		projCar->SetIsMoving(true); // to spin wheels :^)
+		projCar->SetIsMoving(true);
 		projCar->GenerateModel();
+		projCar->DisableLights();
 
 		if (projectileCars.size() > 5) {
 			projectileCars.pop_front();
@@ -264,6 +282,9 @@ void World::Update(float dt)
 	for (list<CarModel*>::iterator it = projectileCars.begin(); it != projectileCars.end(); ++it) {
 		(*it)->Update(dt);
 	}
+
+	// Collisions!
+	DoCollisions();
 }
 
 void World::Draw()
@@ -330,6 +351,7 @@ void World::InitializeModels() {
 	playerCar = new PlayerControlledCarModel(vec3(0.0f, 0.75f, 0.0f));
 	playerCar->SetColorFromVec3(gold);
 	playerCar->GenerateModel();
+	cars.push_back(playerCar);
 
 	grid = new GridModel(vec3(0.0f, 0.0f, 0.0f));
 	grid->GenerateModel();
@@ -345,6 +367,29 @@ void World::InitializeModels() {
 	AxisModel* axis = new AxisModel(vec3(0.0f, 0.0f, 0.0f));
 	axis->GenerateModel();
 	staticModels.push_back(axis);
+
+	for (int i = 0; i < 5; ++i) {
+		float posX = rand() % 2 == 0 ? 1.0f : -1.0f;
+		float randomX = rand() % 20 * posX;
+		float posZ = rand() % 2 == 0 ? 1.0f : -1.0f;
+		float randomZ = rand() % 20 * posZ;
+		
+		int sign = 1;
+		if (posX < 0.0f) {
+			sign = -1;
+		}
+		
+		float theta = atanf(abs(randomX)/abs(randomZ));
+		float thetaD = degrees(theta);
+
+		ComputerControlledCarModel* compCar = new ComputerControlledCarModel(vec3(randomX, 0.75f, randomZ));
+		compCar->SetColorFromVec3(darkSlateGray);
+		compCar->SetRotation(vec3(0.0f, thetaD, 0.0f));
+		compCar->GenerateModel();
+		compCars.push_back(compCar);
+		cars.push_back(compCar);
+		mobileModels.push_back(compCar);
+	}
 }
 
 mat4 World::GetInstancedViewProjectionMatrix() {
@@ -379,4 +424,73 @@ void World::AddCamera(CameraType type, Camera* camera) {
 void World::ToggleCamera() {
 	int modulo = mCameras.size();
 	mCurrentCamera = (mCurrentCamera + 1) % modulo;
+}
+
+void World::DoCollisions() {
+	for (int i = 0; i < cars.size(); ++i) {
+		CarModel* car0 = cars[i];
+		for (int j = 0; j < cars.size(); ++j){
+			if (j <= i) continue;
+			CarModel* car1 = cars[j];
+
+			Collision col = CheckCollision(*car0->GetCollisionBox(), *car1->GetCollisionBox());
+			if (col.collided) {
+				int move = rand() % 2;
+				if (move == 0) {
+					vec3 pos = car0->GetCenterPosition();
+					pos += col.distance * vec3(1.0f, 0.0f, 1.0f);
+					car0->SetCenterPosition(pos);
+				} else {
+					vec3 pos = car1->GetCenterPosition();
+					pos -= col.distance * vec3(1.0f, 0.0f, 1.0f);
+					car1->SetCenterPosition(pos);
+				}
+			}
+		}
+	}
+}
+
+Collision World::CheckCollision(CollisionModel& one, CollisionModel& two) {
+	vec3 centerOne = one.GetCenterPosition();
+	vec3 sizeOne = one.GetSizeScale() * one.GetCollisionMax();
+
+	vec3 centerTwo = two.GetCenterPosition();
+	vec3 sizeTwo = two.GetSizeScale() * two.GetCollisionMax();
+	 
+	bool collisionX = false;
+	if (centerOne.x >= centerTwo.x) {
+		collisionX = centerOne.x - sizeOne.x <= centerTwo.x + sizeTwo.x
+			&& centerOne.x + sizeOne.x >= centerTwo.x - sizeTwo.x;
+	}
+	else {
+		collisionX = centerTwo.x - sizeTwo.x <= centerOne.x + sizeOne.x
+			&& centerTwo.x + sizeTwo.x >= centerOne.x - sizeOne.x;
+	}
+	float colX = collisionX ? (centerOne.x + sizeOne.x) - (centerTwo.x + sizeTwo.x) : 0.0f;
+
+	bool collisionY = false;
+	if (centerOne.y >= centerTwo.y) {
+		collisionY = centerOne.y - sizeOne.y <= centerTwo.y + sizeTwo.y
+			&& centerOne.y + sizeOne.y >= centerTwo.y - sizeTwo.y;
+	}
+	else {
+		collisionY = centerTwo.y - sizeTwo.y <= centerOne.y + sizeOne.y
+			&& centerTwo.y + sizeTwo.y >= centerOne.y - sizeOne.y;
+	}
+	float colY = collisionY ? (centerOne.y + sizeOne.y) - (centerTwo.y + sizeTwo.y) : 0.0f;
+
+	bool collisionZ = false;
+	if (centerOne.z >= centerTwo.z) {
+		collisionZ = centerOne.z - sizeOne.z <= centerTwo.z + sizeTwo.z
+			&& centerOne.z + sizeOne.z >= centerTwo.z - sizeTwo.z;
+	}
+	else {
+		collisionZ = centerTwo.z - sizeTwo.z <= centerOne.z + sizeOne.z
+			&& centerTwo.z + sizeTwo.z >= centerOne.z - sizeOne.z;
+	}
+	float colZ = collisionZ ? (centerOne.z + sizeOne.z) - (centerTwo.z + sizeTwo.z) : 0.0f;
+
+	bool collisionHappened = collisionX && collisionY && collisionZ;
+	vec3 collision = vec3(colX, colY, colZ);
+	return Collision{ collisionHappened, collision };
 }

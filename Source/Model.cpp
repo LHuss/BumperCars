@@ -147,6 +147,10 @@ void Model::Hide() {
 	mHidden = true;
 }
 
+void Model::Toggle() {
+	mHidden = !mHidden;
+}
+
 glm::vec3 Model::ComputeColorFromRGB(int r, int g, int b) {
 	return glm::vec3((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f);
 }
