@@ -20,6 +20,7 @@ enum ShaderType
 	SHADER_TEXTURED_UNCOLORED,
 	SHADER_LIGHTING,
 	SHADER_LIGHTING_TEXTURED,
+	SHADER_SHADOWS,
 	NUM_SHADERS,
 	SHADER_NULL
 };
@@ -77,6 +78,9 @@ public:
 
 	static char* ToCharArray(std::string in);
 
+	static void StartRenderingShadows();
+	static void StopRenderingShadows();
+
 private:
 	static GLFWwindow* spWindow;
 
@@ -85,5 +89,6 @@ private:
 
 	static std::vector<unsigned int> sTextureID;
 
+	static bool sRenderingShadows;
 };
 

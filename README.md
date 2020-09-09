@@ -23,6 +23,7 @@
 | X | Change textures used | O | Textures + Colors - Textures + texture colros - No Textures |
 | B | Change Lighting | O | Untextured + Lighting - Textured + Lighting - No Lighting |
 | C | Toggle Camera | O | Free roam - 1st person - 3rd person |
-| L | Toggle Lights | X | - |
+| 7 | Toggle Player Lights | X | - |
+| 8 | Toggle Lights | X | - |
 | 9 | Toggle Hitboxes | X | - |
 | H | Toggle "Animation" | X | - |

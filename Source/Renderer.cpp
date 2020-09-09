@@ -32,6 +32,7 @@ using namespace std;
 
 std::vector<unsigned int> Renderer::sShaderProgramID;
 unsigned int Renderer::sCurrentShader;
+bool Renderer::sRenderingShadows;
 
 std::vector<unsigned int> Renderer::sTextureID;
 
@@ -95,8 +96,13 @@ void Renderer::Initialize()
 		LoadShaders(shaderPathPrefix + "Lighting_Textured.vert",
 			shaderPathPrefix + "Lighting_Textured.frag")
 	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Shadows.vert",
+			shaderPathPrefix + "Shadows.frag")
+	);
 
 	sCurrentShader = 0;
+	sRenderingShadows = false;
 
 	// Loading Textures
 #if defined(PLATFORM_OSX)
@@ -569,4 +575,12 @@ void Renderer::CheckForErrors()
 	while (PrintError() == false)
 	{
 	}
+}
+
+void Renderer::StartRenderingShadows() {
+	sRenderingShadows = true;
+}
+
+void Renderer::StopRenderingShadows() {
+	sRenderingShadows = false;
 }

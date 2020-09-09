@@ -104,6 +104,8 @@
     <None Include="..\Assets\Shaders\Lighting.vert" />
     <None Include="..\Assets\Shaders\Lighting_Textured.frag" />
     <None Include="..\Assets\Shaders\Lighting_Textured.vert" />
+    <None Include="..\Assets\Shaders\Shadows.frag" />
+    <None Include="..\Assets\Shaders\Shadows.vert" />
     <None Include="..\Assets\Shaders\SolidColor.frag" />
     <None Include="..\Assets\Shaders\SolidColor.vert" />
     <None Include="..\Assets\Shaders\Textured.frag" />

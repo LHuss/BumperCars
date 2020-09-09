@@ -47,6 +47,12 @@
     <None Include="..\Assets\Shaders\Textured_Uncolored.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="..\Assets\Shaders\Shadows.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\Assets\Shaders\Shadows.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Lab04\Assets\Textures\brick.jpg">

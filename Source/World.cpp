@@ -97,7 +97,10 @@ void World::Update(float dt)
 	}
 
 	// Toggle Lights
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_L)) {
+	if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_7)) {
+		playerCar->ToggleLights();
+	}
+	if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS && EventManager::CanUseKey(GLFW_KEY_8)) {
 		for (auto it : cars) {
 			it->ToggleLights();
 		}
